@@ -1,0 +1,9 @@
+# change to false to stop auto-update-check
+auto-update-check: default
+# set to true before sending a log about an issue.
+#logs trace data required to pinpoint where errors are.
+debug: default
+# Set if enderman can pickup blocks.
+enderman-grief: default
+# Set whether or not skeleton horses spawn.
+skeleton-horse-spawn: default

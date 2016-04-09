@@ -1,0 +1,13 @@
+name: NoEndermanGrief
+main: com.github.joelgodofwar.neg.PluginBase
+version: 1.0.1
+author: JoelGodOfWar
+
+commands:
+  neg:
+    description: Shows NoEndermanGrief help.
+    usage: /<command>
+permissions:
+  noendermangrief.op:
+    description: Overrides all permissions.
+    default: false
