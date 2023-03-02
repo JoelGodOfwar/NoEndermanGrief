@@ -5,7 +5,7 @@
 D2 Fixed an error that would overwrite the config.</notes>
   </release>
   <developer>
-    <version>1.14_1.0.5.D4</version>
+    <version>1.14_1.0.5.D5</version>
     <notes>D3	Testing a new update checker.</notes>
   </developer>
 </versions>
