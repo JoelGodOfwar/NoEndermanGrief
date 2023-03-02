@@ -1,11 +1,11 @@
 <versions>
   <release>
-    <version>1.14_1.0.5</version>
+    <version>1.14_1.0.4</version>
     <notes>D1 Minor changes to logging, added 1.19.x book support.
 D2 Fixed an error that would overwrite the config.</notes>
   </release>
   <developer>
-    <version>1.14_1.0.5.D3</version>
+    <version>1.14_1.0.5.D4</version>
     <notes>D3	Testing a new update checker.</notes>
   </developer>
 </versions>
