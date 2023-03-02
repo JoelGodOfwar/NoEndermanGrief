@@ -6,6 +6,6 @@ D2 Fixed an error that would overwrite the config.</notes>
   </release>
   <developer>
     <version>1.14_1.0.5.D3</version>
-    <notes>D2 Fixed an issue where sending command as console would cause errors.</notes>
+    <notes>D3	Testing a new update checker.</notes>
   </developer>
 </versions>
