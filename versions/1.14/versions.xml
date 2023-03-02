@@ -1,0 +1,7 @@
+<versions>
+  <release>1.14_1.0.4</release>
+  <release-notes>D1 Minor changes to logging, added 1.19.x book support.
+D2 Fixed an error that would overwrite the config.</release-notes>
+  <developer>1.14_1.0.5.D2</developer>
+  <developer-notes>D2 Fixed an issue where sending command as console would cause errors.</developer-notes>
+</versions>
