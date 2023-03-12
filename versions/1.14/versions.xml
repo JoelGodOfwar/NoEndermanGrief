@@ -8,6 +8,6 @@ D4	Added new config option longpluginname under console category. true=NoEnderma
   </release>
   <developer>
     <version>1.14_1.0.6.D1</version>
-    <notes>D1	None yet.</notes>
+    <notes>D1	Fixed UpdateChecker notification.</notes>
   </developer>
 </versions>
