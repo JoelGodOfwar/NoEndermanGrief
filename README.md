@@ -2,6 +2,6 @@
 
 Download Links
 
-https://www.spigotmc.org/resources/no-enderman-grief.21385/
+https://www.spigotmc.org/resources/no-enderman-grief2.71236/
 
-http://dev.bukkit.org/bukkit-plugins/no-enderman-grief-1-0-1/
+https://dev.bukkit.org/projects/no-enderman-grief2
