@@ -1,9 +1,29 @@
+# DO NOT CHANGE VERSION
+version: 1.0.6
 # change to false to stop auto-update-check
-auto-update-check: default
+auto_update_check: true
 # set to true before sending a log about an issue.
-#logs trace data required to pinpoint where errors are.
-debug: default
-# Set if enderman can pickup blocks.
-enderman-grief: default
-# Set whether or not skeleton horses spawn.
-skeleton-horse-spawn: default
+# logs trace data required to pinpoint where errors are.
+debug: false
+# Set the language to use, en_US, nl_NL, lol_US, fr_FR, de_DE, cs-CZ, pt_BR
+lang: en_US
+
+console:
+# Enables fancy ANSI colors in console. (Disable if you're getting weird characters in the console)
+  colorful_console: true
+# Should NEG use it's full name or NEG in console messages?
+  longpluginname: true
+# Set if Enderman can pickup blocks. false=no grief
+enderman_grief: false
+# Set whether or not Skeleton Horses spawn. false=no grief
+skeleton_horse_spawn: false
+# Set if Creeper explosions can destroy blocks. false=no grief
+creeper_grief: false
+# Set if Wandering Traders spawn. false=no spawn
+wandering_trader_spawn: false
+# Set whether Ghast fireball explosions can destroy blocks. false=no grief
+ghast_grief: false
+# Set if whether Phantoms spawn. false=no spawn
+phantom_spawn: false
+# Set if Pillager Patrols should spawn. false=no spawn
+pillager_patrol_spawn: false

@@ -1,0 +1,65 @@
+version: 1.0.6
+noperm: Vous n'êtes pas autorisé à utiliser
+server_not_version: Le serveur n'est PAS la version 1.14.*+
+enderman_pickup: Enderman a tenté de prendre un bloc à 
+creeper_explode: Creeper a tenté d'exploser à 
+ghast_explode: Ghast Fireball a tenté d'exploser à 
+new_version: Nouvelle version disponible!
+skeleton_horse: Cheval squelette a tenté de frayer à 
+phantom: Phantom a tenté d'apparaître à 
+pillager_patrol: Pillager Patrol a tenté d'apparaître à 
+wandering_trader: commerçant errant essayé d'apparaître à 
+enderman_grief_set: enderman_grief a été défini sur 
+enderman_grief_current: Enderman Grief est actuellement réglé sur [setting]
+enderman_will: Endermen va ramasser des blocs.
+enderman_wont: Les Endermen ne ramasseront pas de blocs.
+skeleton_horse_set: skeleton_horse_spawn a été défini sur 
+skeleton_horse_current: Skeleton Horse Spawn est actuellement réglé sur [setting]
+skeleton_horse_will: skeleton_horse apparaîtra pendant les orages.
+skeleton_horse_won: skeleton_horse ne se reproduira pas pendant les orages.
+wandering_trader_set: le frai de commerçant errant a été défini sur
+wandering_trader_current: Les marchands errants sont actuellement définis sur [setting]
+wandering_trader_will: commerçant errant va se reproduire.
+wandering_trader_wont: commerçant errant ne va pas se reproduire.
+creeper_set: creeper_grief a été défini sur 
+creeper_current: Creeper Grief est actuellement réglé sur [setting]
+creeper_will: Les creepers détruiront les blocs.
+creeper_wont: Les creepers ne détruiront pas les blocs.
+ghast_set: ghast_grief a été défini sur 
+ghast_current: ghast_grief est actuellement réglé sur [setting]
+ghast_will: Les Ghasts détruiront les blocs.
+ghast_wont: Les Ghasts ne détruiront pas les blocs.
+phantom_set: phantom_spawn a été défini sur 
+phantom_current: phantom_spawn est actuellement réglé sur [setting]
+phantom_will: Le fantôme apparaîtra.
+phantom_wont: Le fantôme n'apparaîtra pas.
+pillager_patrol_set: pillager_patrol_spawn a été défini sur 
+pillager_patrol_current: pillager_patrol_spawn est actuellement réglé sur [setting]
+pillager_patrol_will: Pillager Patrol va apparaître.
+pillager_patrol_wont: La patrouille des pillards n'apparaît pas.
+help_endermen: Définissez si les endermen grief ou non.
+help_skeleton_horse: Définissez si les chevaux squelettes apparaissent ou non.
+help_creeper: Définir si Creepers chagrin ou non.
+help_ghast: Définir si Ghasts chagrin ou non.
+help_phantom: Définissez si les fantômes apparaissent ou non.
+help_pillager_patrol: Définissez si les patrouilles de pillards apparaissent ou non.
+help_wandering_trader: Définir si les commerçants errants apparaissent ou non.
+help_update: Vérifiez la mise à jour.
+help_reload: Recharger le fichier de configuration.uração.
+help_update_check: Définir la vérification de la mise à jour automatique.
+help_book: Vous donne un livre pour définir les configurations en un clic.lique.
+boolean: L'argument doit être booléen . Usage
+nocheck: ne seront pas les mises à jour!
+yescheck: va vérifier les mises à jour!
+newvers:
+  message: Une nouvelle version de <MyPlugin> est disponible !
+  old_vers:   Ta version
+  new_vers: Version la plus récente
+  notes: Remarques
+  please_update: Veuillez mettre à jour vers la version la plus récente.
+  download: Télécharger
+  donate: Faire un don
+curvers: Version actuelle est!
+debugtrue: Debug défini sur boolean.
+debuguse: Bascule temporairement le débogage.
+help_book: Vous donne un livre de paramètres.

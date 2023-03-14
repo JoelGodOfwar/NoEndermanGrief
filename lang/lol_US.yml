@@ -1,0 +1,64 @@
+version: 1.0.6
+noperm: U do not haz permishun to uz
+server_not_version: Servr iz not vershun 1.14.*+
+enderman_pickup: Endymon trid 2 grab blocz @ 
+creeper_explode: Creepr trid 2 splode @ 
+ghast_explode: Gost Furball tryd 2 splode @
+new_version: New vershun available!
+skeleton_horse: Skeley hors trid 2 spawn @ 
+phantom: fantim trid 2 spawn @ 
+pillager_patrol: Pilagr pawtrl tryd 2 spon @ 
+wandering_trader: Wanderin tradr trid 2 spawn @
+enderman_grief_set: endyman_greef haz ben sit 2 
+enderman_grief_current: Endyman Greef iz purrently sit 2 [setting]
+enderman_will: Endyman wil picup blockz.
+enderman_wont: Endyman wil not picup blockz
+skeleton_horse_set: skelyton_hors_spwn haz ben sit 2 
+skeleton_horse_current: Skelyton Hors Spown iz purrently sit 2 [setting]
+skeleton_horse_will: Skelyton_hors wil spwn durin tundersterm.
+wandering_trader_set: wanderin tradr haz ben sit 2 
+wandering_trader_current: Wonder'ng Tradrz r purrently sit 2 [setting]
+wandering_trader_will: wanderin tradr wil spwn.
+wandering_trader_wont: wanderin tradr wil not spwn.
+creeper_set: creepy_greef haz ben sit 2 
+creeper_current: Creepy greef iz purrently sit 2 [setting]
+creeper_will: Creepys wil hid blockz.
+creeper_wont: Creepys no hid blockz
+ghast_set: ghast_grief haz ben sit 2 
+ghast_current: ghast_grief iz purrently sit 2 [setting]
+ghast_will: Gosts wil hid blockz.
+ghast_wont: Gosts no hid blockz
+phantom_set: phantom_spawn haz ben sit 2 
+phantom_current: phantom_spawn iz purrently sit 2 [setting]
+phantom_will: fantim wil spwn.
+phantom_wont: Fantim wil not spwn.
+pillager_patrol_set: pillager_patrol_spawn haz ben sit 2 
+pillager_patrol_current: pillager_patrol_spawn iz purrently sit 2 [setting]
+pillager_patrol_will: pilagr pawtrl wil spwn.
+pillager_patrol_wont: pilagr pawtrl wil not spwn.
+help_endermen: Sit ef endyman greef o not.
+help_skeleton_horse: Sit ef Skelyton hors spwn o not.
+help_creeper: Sit ef Creepys greef o not.
+help_ghast: Sit ef Gosts greef o not.
+help_phantom: Sit ef Fantims spwn o not.
+help_pillager_patrol: Sit ef Pilagr Pawtrls spwn o not.
+help_wandering_trader: Sit ef Wanderin tradrs spwn o not.
+help_update: Chick 4 updatez.
+help_reload: Relode Cunfigy fil.
+help_update_check: Sit audo updatez chick.
+help_book: givez u bOK to seted confiGz wIF CLik
+boolean: Argument must be boolean. Usage
+nocheck: will not check 4 updatez!
+yescheck: will check 4 updatez!
+newvers: 
+  message: Thar iz nu vershun 4 <MyPlugin> available!
+  old_vers:   Ur vershun
+  new_vers: Newr vershun
+  notes: Noatz
+  please_update: pleez updat 2 teh nEwEsT vershun.
+  download: Download
+  donate: Give treats?
+curvers: Vershun iz up 2 date!
+debugtrue: Da bug iz boolean.
+debuguse: Temply toogls da bug.
+help_book: Givs U a sittins book.

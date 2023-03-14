@@ -1,4 +1,4 @@
-package com.github.joelgodofwar.neg.api;
+package com.github.joelgodofwar.neg.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,28 +11,25 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 
-import com.github.joelgodofwar.neg.PluginBase;
+import com.github.joelgodofwar.neg.NoEndermanGrief;
 
 public class ConfigAPI  {
 
+	@SuppressWarnings("unused")
 	public static  void CheckForConfig(Plugin plugin){
 		try{
 			PluginDescriptionFile pdfFile = plugin.getDescription();
 			if(!plugin.getDataFolder().exists()){
-				plugin.getLogger().info(pdfFile.getName() + ": Data Folder doesn't exist");
-				plugin.getLogger().info(pdfFile.getName() + ": Creating Data Folder");
+				log(": Data Folder doesn't exist", plugin);
+				log(": Creating Data Folder", plugin);
 				plugin.getDataFolder().mkdirs();
-				plugin.getLogger().info(pdfFile.getName() + ": Data Folder Created at " + plugin.getDataFolder());
+				log(": Data Folder Created at " + plugin.getDataFolder(), plugin);
 			}
 			File  file = new File(plugin.getDataFolder(), "config.yml");
 			plugin.getLogger().info("" + file);
 			if(!file.exists()){
-				plugin.getLogger().info(pdfFile.getName() + ": config.yml not found, creating!");
-				plugin.saveDefaultConfig();
-				FileConfiguration config = plugin.getConfig();
-				
-				config.options().copyDefaults(true);
-				plugin.saveConfig();
+				log(": config.yml not found, creating!", plugin);
+				plugin.saveResource("config.yml", true);
 			}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -45,39 +42,55 @@ public class ConfigAPI  {
 		String daString = config.getString("debug").replace("'", "") + ",";
 		
 		if(daString.contains("true")){
-			PluginBase.debug = true;
+			NoEndermanGrief.debug = true;
 			//log("debug=true", plugin);
 		}else{
-			PluginBase.debug = false;
+			NoEndermanGrief.debug = false;
 			//log("debug=false", plugin);
 		}
-		String daString2 = config.getString("auto-update-check").replace("'", "") + ",";
+		String daString2 = config.getString("auto_update_check").replace("'", "") + ",";
 		if(daString2.contains("true")){
-			PluginBase.UpdateCheck = true;
+			NoEndermanGrief.UpdateCheck = true;
 		}else{
-			PluginBase.UpdateCheck = false;
+			NoEndermanGrief.UpdateCheck = false;
 		}
-		String daString3 = config.getString("skeleton-horse-spawn").replace("'", "") + ",";
+		String daString3 = config.getString("skeleton_horse_spawn").replace("'", "") + ",";
 		if(daString3.contains("true")){
-			PluginBase.allowSpawn = true;
+			NoEndermanGrief.allowSpawnSH = true;
 		}else{
-			PluginBase.allowSpawn = false;
+			NoEndermanGrief.allowSpawnSH = false;
 		}
-		String daString4 = config.getString("enderman-grief").replace("'", "") + ",";
+		String daString5 = config.getString("wandering_trader").replace("'", "") + ",";
+		if(daString5.contains("true")){
+			NoEndermanGrief.allowSpawnWT = true;
+		}else{
+			NoEndermanGrief.allowSpawnWT = false;
+		}
+		String daString4 = config.getString("enderman_grief").replace("'", "") + ",";
 		if(daString4.contains("true")){
-			PluginBase.allowPickup = true;
+			NoEndermanGrief.allowPickup = true;
 		}else{
-			PluginBase.allowPickup = false;
+			NoEndermanGrief.allowPickup = false;
 		}
-		if(PluginBase.debug){log("UpdateCheck = " + PluginBase.UpdateCheck, plugin);} //TODO: Logger
+		String daString6 = config.getString("enderman_grief").replace("'", "") + ",";
+		if(daString6.contains("true")){
+			NoEndermanGrief.allowExplode = true;
+		}else{
+			NoEndermanGrief.allowExplode = false;
+		}
+		String daString7 = config.getString("lang", "en_US").replace("'", "");
+		NoEndermanGrief.daLang = daString7;
+		if(NoEndermanGrief.debug){log("UpdateCheck = " + NoEndermanGrief.UpdateCheck, plugin);} //TODO: Logger
 		if(sender != null){
 			sender.sendMessage(ChatColor.YELLOW + plugin.getName() + ChatColor.WHITE + " Configs Reloaded");
 		}
 	}
 	public static  void log(String dalog, Plugin plugin){
-		PluginBase.logger.info(plugin.getName() + " " + dalog);
+		NoEndermanGrief.logger.info(Ansi.YELLOW + "" + plugin.getName() + Ansi.RESET + " " + dalog + Ansi.RESET);
 	}
-	
+	public  void logDebug(String dalog, Plugin plugin){
+		log(" " + plugin.getDescription().getVersion() + Ansi.RED + Ansi.BOLD + " [DEBUG] " + Ansi.RESET + dalog, plugin);
+	}
 	/*
      * this copy(); method copies the specified file from your jar
      *     to your /plugins/<pluginName>/ folder

@@ -1,0 +1,65 @@
+version: 1.0.6
+noperm: You do not have permission to use
+server_not_version: Server is NOT version 1.14.*+
+enderman_pickup: Enderman attempted to pickup block at 
+creeper_explode: Creeper attempted to explode at 
+ghast_explode: Ghast Fireball attempted to explode at 
+new_version: New version available!
+skeleton_horse: Skeleton Horse attempted to spawn at 
+phantom: Phantom attempted to spawn at 
+pillager_patrol: Pillager Patrol attempted to spawn at 
+wandering_trader: Wandering Trader attempted to spawn at 
+enderman_grief_set: enderman_grief has been set to 
+enderman_grief_current: Enderman Grief is currently set to [setting]
+enderman_will: Endermen will pickup blocks.
+enderman_wont: Endermen will not pickup blocks.
+skeleton_horse_set: skeleton_horse_spawn has been set to 
+skeleton_horse_current: Skeleton Horse Spawn is currently set to [setting]
+skeleton_horse_will: skeleton_horse will spawn during thunderstorms.
+skeleton_horse_wont: skeleton_horse will not spawn during thunderstorms.
+wandering_trader_set: wandering trader spawn has been set to 
+wandering_trader_current: Wandering Traders are currently set to [setting]
+wandering_trader_will: Wandering trader will spawn.
+wandering_trader_wont: Wandering trader will not spawn.
+creeper_set: creeper_grief has been set to 
+creeper_current: Creeper Grief is currently set to [setting]
+creeper_will: Creepers will destroy blocks.
+creeper_wont: Creepers will not destroy blocks.
+ghast_set: ghast_grief has been set to 
+ghast_current: ghast_grief is currently set to [setting]
+ghast_will: Ghasts will destroy blocks.
+ghast_wont: Ghasts will not destroy blocks.
+phantom_set: phantom_spawn has been set to 
+phantom_current: phantom_spawn is currently set to [setting]
+phantom_will: Phantom will spawn.
+phantom_wont: Phantom will not spawn.
+pillager_patrol_set: pillager_patrol_spawn has been set to 
+pillager_patrol_current: pillager_patrol_spawn is currently set to [setting]
+pillager_patrol_will: Pillager Patrol will spawn.
+pillager_patrol_wont: Pillager Patrol not spawn.
+help_endermen: Set if endermen grief or not.
+help_skeleton_horse: Set if Skeleton Horses spawn or not.
+help_creeper: Set if Creepers grief or not.
+help_ghast: Set if Ghasts grief or not.
+help_phantom: Set if Phantoms spawn or not.
+help_pillager_patrol: Set if Pillager Patrols spawn or not.
+help_wandering_trader: Set if Wandering Traders spawn or not.
+help_update: Check for updates.
+help_reload: Reload Config file.
+help_update_check: Set auto update check.
+help_book: Gives you a book to set configs with a click.
+boolean: Argument must be boolean. Usage
+nocheck: will not check for updates!
+yescheck: will check for updates!
+newvers: 
+  message: There is a new version of <MyPlugin> available!
+  old_vers:   Your version
+  new_vers: Latest version
+  notes: Notes
+  please_update: Please update to the newest version.
+  download: Download
+  donate: Donate
+curvers: Version is up to date!
+debugtrue: Debug set to boolean.
+debuguse: Temporarily toggles debug.
+help_book: Gives you a settings book.
