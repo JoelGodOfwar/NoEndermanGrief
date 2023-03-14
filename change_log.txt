@@ -1,6 +1,6 @@
 1.14_1.0.6
 D1	Fixed UpdateChecker notification.
-D2	
+D2	Found bug reported in 1.14_1.0.4, removed all instances of "System.out.PrintLn"
 1.14_1.0.5
 D1	Fixed an issue where console sending command NEG would cause an exception.
 D2	Fixed an issue where sending command as console would cause errors.

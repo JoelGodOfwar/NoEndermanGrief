@@ -20,7 +20,7 @@ public class GUIMoveItem implements Listener {
     public void clickEvent(InventoryClickEvent e){
  
         //Check to see if its the GUI menu
-		System.out.println(e.getView().getTitle());
+		//System.out.println(e.getView().getTitle());
         if( e.getView().getTitle().equalsIgnoreCase("Configurations") ){
         	
         	
@@ -28,12 +28,12 @@ public class GUIMoveItem implements Listener {
             Player player = (Player) e.getWhoClicked();
             //Determine what they selected and what to do
             if( !(e.getCurrentItem() != null) ) {return;}
-            System.out.println(e.getCurrentItem().getType());
+            //System.out.println(e.getCurrentItem().getType());
             ItemStack curItem = e.getCurrentItem();
             if(!(curItem != null)) {
             	return;
             }
-            System.out.println(curItem.getItemMeta().getDisplayName());
+            //System.out.println(curItem.getItemMeta().getDisplayName());
             switch(curItem.getType()){ // .getItemMeta().getDisplayName()
                 case LIME_STAINED_GLASS_PANE:
                 	strTrue = curItem.getItemMeta().getDisplayName();
