@@ -67,6 +67,7 @@ import com.github.joelgodofwar.neg.util.VersionChecker;
 import com.github.joelgodofwar.neg.util.YmlConfiguration;
 
 
+@SuppressWarnings("unused")
 public class NoEndermanGrief extends JavaPlugin implements Listener{
 	public final static Logger logger = Logger.getLogger("Minecraft");
 	public static String daLang;
@@ -318,7 +319,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 		
 		logDebug("lang=" + daLang);
 		getServer().getPluginManager().registerEvents(this, this);
-		getServer().getPluginManager().registerEvents(new GUIMoveItem(), this);
+		//getServer().getPluginManager().registerEvents(new GUIMoveItem(), this);  // Comment out for release versions, un comment for Dev builds.
 		consoleInfo(Ansi.BOLD + "ENABLED" + Ansi.RESET);
 		
 		
@@ -1196,7 +1197,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 					if(UpdateCheck){
 						try {
 							Bukkit.getConsoleSender().sendMessage("Checking for updates...");
-							VersionChecker updater = new VersionChecker("1.14_1.0.5", updateVersion, updateurl);
+							VersionChecker updater = new VersionChecker(this, updateVersion, updateurl);
 							if(updater.checkForUpdates2()) {
 								UpdateAvailable = true; // TODO: Update Checker
 								UColdVers = updater.oldVersion();
