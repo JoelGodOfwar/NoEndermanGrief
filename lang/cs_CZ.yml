@@ -1,0 +1,65 @@
+version: 1.0.6
+noperm: Nemáte oprávnení k použití
+server_not_version: Server NENÍ verze 1.14.*+
+enderman_pickup: Enderman se pokusil vyzvednout blok na 
+creeper_explode: Creeper se pokusil explodovat 
+ghast_explode: Ghast Fireball se pokusil explodovat 
+new_version: K dispozici nová verze!
+skeleton_horse: Skeleton Horse se pokusil plodit 
+phantom: Phantom se pokusil plodit 
+pillager_patrol: Pillager Patrol se pokusila založit na 
+wandering_trader: Putující obchodník se pokusil o narození v 
+enderman_grief_set: enderman_grief byl nastaven na
+enderman_grief_current: Enderman Grief je aktuálně nastaven na [setting]
+enderman_will: Endermen vyzvedne bloky.
+enderman_wont: Endermen nebude vyzvednout bloky.
+skeleton_horse_set: skeleton_horse_spawn byl nastaven na 
+skeleton_horse_current: Skeleton Horse Spawn je aktuálně nastaven na [setting]
+skeleton_horse_will: SKELETON_HORSE se bude behem bourek plodit.
+skeleton_horse_wont: SKELETON_HORSE se behem bourek nevytvorí.
+wandering_trader_set: putování obchodníka bylo nastaveno na
+wandering_trader_current: Putovní obchodníci jsou aktuálně nastaveni na [setting]
+wandering_trader_will: putující obchodník bude plodit.
+wandering_trader_wont: putující obchodník se nevytvorí.
+creeper_set: creeper_grief byl nastaven na 
+creeper_current: Creeper Grief je aktuálně nastaven na [setting]
+creeper_will: Creepers znicí bloky.
+creeper_wont: Creepers neznicí bloky.
+ghast_set: ghast_grief byl nastaven na 
+ghast_current: ghast_grief je aktuálně nastaven na [setting]
+ghast_will: Ghasts znicí bloky.
+ghast_wont: Ghasts neznicí bloky.
+phantom_set: phantom_spawn byl nastaven na 
+phantom_current: phantom_spawn je aktuálně nastaven na [setting]
+phantom_will: Fantom se objeví.
+phantom_wont: Fantom se neobjeví.
+pillager_patrol_set: pillager_patrol_spawn byl nastaven na 
+pillager_patrol_current: pillager_patrol_spawn je aktuálně nastaven na [setting]
+pillager_patrol_will: Objeví se Pillager Patrol.
+pillager_patrol_wont: Pillager Patrol se nezobrazí.
+help_endermen: Nastavte, pokud endermen ukradne nebo ne.
+help_skeleton_horse: Nastavte, zda se Skeleton Horses narodí nebo ne.
+help_creeper: Nastavit, jestli Creepers obtežovat nebo ne.
+help_ghast: Nastavit, jestli Ghasts obtežovat nebo ne.
+help_phantom: Definujte, zda se Fantomy objeví nebo ne.
+help_pillager_patrol: Nastavit, zda se budou objevovat Pillager Patrols nebo ne.
+help_wandering_trader: Nastavte, pokud se putující obchodníci narodí nebo ne.
+help_update: Kontrola aktualizací.
+help_reload: Znovu nactete soubor Config.
+help_update_check: Nastavit kontrolu automatické aktualizace.
+help_book: Dá vám knihu o konfiguraci nastavení jedním kliknutím.
+boolean: Argument musí být booleovský. Používání
+nocheck: nebude kontrolovat aktualizace!
+yescheck: zkontroluje aktualizace!
+newvers:
+  message: K dispozici je nová verze <MyPlugin>!
+  old_vers:       Vaše verze
+  new_vers: Nejnovější verze
+  notes: Poznámky
+  please_update: Aktualizujte prosím na nejnovější verzi.
+  download: Stažení
+  donate: Darujte
+curvers: Verze je aktuální!
+debugtrue: Ladění nastaveno na boolean.
+debuguse: Dočasně přepíná ladění.
+help_book: Poskytne vám knihu nastavení.

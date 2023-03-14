@@ -1,0 +1,65 @@
+version: 1.0.6
+noperm: Sie haben keine Berechtigung
+server_not_version: Server ist NICHT Version 1.14.*+
+enderman_pickup: Enderman hat versucht, Block auf zu übernehmen 
+creeper_explode: Creeper versuchte an zu explodieren 
+ghast_explode: Ghast Fireball versuchte an zu explodieren 
+new_version: Neue Version verfügbar!
+skeleton_horse: Skeleton Horse versuchte an zu laichen beim 
+phantom: Phantom versuchte an zu laichen beim 
+pillager_patrol: Pillager Patrol versuchte an zu laichen beim 
+wandering_trader: Wandering Trader versuchte an zu laichen beim
+enderman_grief_set: enderman_grief wurde auf gesetzt
+enderman_grief_current: Enderman Grief ist derzeit auf [setting] eingestellt.
+enderman_will: Endermen werden Blöcke abholen.
+enderman_wont: Endermen stehlen keine Blöcke.
+skeleton_horse_set: skeleton_horse_spawn wurde auf gesetzt 
+skeleton_horse_current:  Skeleton Horse Spawn ist derzeit auf [setting] eingestellt.
+skeleton_horse_will: SKELETON_HORSE wird während eines Gewitters erscheinen.
+skeleton_horse_wont: SKELETON_HORSE wird während eines Gewitters nicht erscheinen.
+wandering_trader_set: Wandernder Händler wurde auf gesetzt 
+wandering_trader_current: Wandering Traders sind derzeit auf [setting] eingestellt.
+wandering_trader_will: wandernder Händler wird laichen.
+wandering_trader_wont: wandernder Händler wird nicht laichen.
+creeper_set: creeper_grief wurde auf gesetzt 
+creeper_current: Creeper Grief ist derzeit auf [setting] eingestellt.
+creeper_will: Creepers zerstört Blöcke.
+creeper_wont: Creepers zerstört keine Blöcke.
+ghast_set: ghast_grief wurde auf gesetzt 
+ghast_current: ghast_grief ist derzeit auf [setting] eingestellt.
+ghast_will: Ghasts zerstört Blöcke.
+ghast_wont: Ghasts zerstört keine Blöcke.
+phantom_set: phantom_spawn wurde auf gesetzt 
+phantom_current: phantom_spawn ist derzeit auf [setting] eingestellt.
+phantom_will: The phantom will appear.
+phantom_wont: Das Phantom wird nicht erscheinen.
+pillager_patrol_set: pillager_patrol_spawn wurde auf gesetzt 
+pillager_patrol_current: pillager_patrol_spawn ist derzeit auf [setting] eingestellt.
+pillager_patrol_will: Pillager Patrol wird erscheinen.
+pillager_patrol_wont: Pillager Patrol nicht erscheinen.
+help_endermen: Stellen Sie ein, ob Endermen stehlen oder nicht.
+help_skeleton_horse: Legt fest, ob Skeleton Horses erscheinen oder nicht.
+help_creeper: Stellen Sie ein, ob Creepers nerven oder nicht.
+help_ghast: Stellen Sie ein, ob Ghasts nerven oder nicht.
+help_phantom: Definieren Sie, ob Phantome erscheinen oder nicht.
+help_pillager_patrol: Legen Sie fest, ob Pillager Patrols erscheinen oder nicht.
+help_wandering_trader: Legt fest, ob wandernde Händler erscheinen oder nicht.
+help_update: Auf Updates prüfen.
+help_reload: Konfigurationsdatei neu laden.
+help_update_check: Automatische Update-Prüfung einstellen.
+help_book: Gibt Ihnen ein Buch zum Festlegen von Konfigurationen mit einem Klick.
+boolean: Argument muss boolean sein . Verwendung
+nocheck: wird nicht nach Updates suchen!
+yescheck: wird nach Updates gesucht!
+newvers:
+  message: Es ist eine neue Version von <MyPlugin> verfügbar!
+  old_vers:   Deine Version
+  new_vers: Neueste Version
+  notes: Notizen
+  please_update: Bitte aktualisieren Sie auf die neueste Version.
+  download: herunterladen
+  donate: Spenden
+curvers: Version ist auf dem neuesten Stand!
+debugtrue: Debug auf boolean gesetzt.
+debuguse: Schaltet das Debugging vorübergehend um.
+help_book: Gibt Ihnen ein Konfigurationsbuch.

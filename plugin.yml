@@ -1,13 +1,23 @@
 name: NoEndermanGrief
-main: com.github.joelgodofwar.neg.PluginBase
-version: 1.0.1
-author: JoelGodOfWar
+main: com.github.joelgodofwar.neg.NoEndermanGrief
+version: 1.14_1.0.6.D2
+author: JoelYahwehOfWar
+api-version: 1.14
 
 commands:
   neg:
     description: Shows NoEndermanGrief help.
     usage: /<command>
 permissions:
-  noendermangrief.op:
-    description: Overrides all permissions.
+  noendermangrief.admin:
+    description: For Admin only, Overrides all permissions.
     default: false
+  noendermangrief.op:
+    description: Overrides most permissions.
+    default: false
+  noendermangrief.showUpdateAvailable:
+    description: Shows player if there is an update on login.
+    default: op
+  noendermangrief.toggledebug:
+    description: Allows the player to use "/mmh toggledebug" command.
+    default: op

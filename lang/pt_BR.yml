@@ -1,0 +1,65 @@
+version: 1.0.6
+noperm: Voce nao tem permissao para usar
+server_not_version: O servidor NÃO é a versão 1.14.*+
+enderman_pickup: Enderman tentou pegar o bloco em 
+creeper_explode: Creeper tentou explodir em 
+ghast_explode: Ghast Fireball tentou explodir em 
+new_version: Nova versao disponivel!
+skeleton_horse: Esqueleto Cavalo tentou desovar em 
+phantom: Phantom tentou gerar em 
+pillager_patrol: Patrulha de Pillager tentou desovar em 
+wandering_trader: Trader Errante tentou desovar em 
+enderman_grief_set: enderman_grief foi definido como
+enderman_grief_current: O Enderman Grief está atualmente definido como [setting]
+enderman_will: Endermen vai pegar blocos.
+enderman_wont: Endermen não vai pegar blocos.
+skeleton_horse_set: skeleton_horse_spawn foi definido como
+skeleton_horse_current: O Skeleton Horse Spawn está atualmente definido para [setting]
+skeleton_horse_will: skeleton_horse surgirá durante tempestades.
+skeleton_horse_wont: skeleton_horse não aparecerá durante tempestades.
+wandering_trader_set: O surgimento de comerciantes errantes foi definido como
+wandering_trader_current: Os comerciantes errantes estão atualmente configurados para [setting]
+wandering_trader_will: comerciante errante irá aparecer.
+wandering_trader_wont: comerciante errante não irá aparecer.
+creeper_set: creeper_grief foi definido como
+creeper_current: Creeper Grief está atualmente definido como [setting]
+creeper_will: Trepadeiras destruirão blocos.
+creeper_wont: Trepadeiras não destruirão blocos.
+ghast_set: ghast_grief foi definido como
+ghast_current: ghast_grief está atualmente definido como [setting]
+ghast_will: Ghasts destruirão blocos.
+ghast_wont: Ghasts não destruirão blocos.
+phantom_set: phantom_spawn foi definido como
+phantom_current: phantom_spawn está atualmente definido como [setting]
+phantom_will: O fantasma aparecerá.
+phantom_wont: O fantasma não aparecerá.
+pillager_patrol_set: pillager_patrol_spawn foi definido como
+pillager_patrol_current: pillager_patrol_spawn está atualmente definido como [setting]
+pillager_patrol_will: A patrulha de saqueador aparece.
+pillager_patrol_wont: O Pillager Patrol não aparece.
+help_endermen: Defina se enderman rouba ou não.
+help_skeleton_horse: Defina se os Cavalos Esqueletos aparecem ou não.
+help_creeper: Defina se Creepers irrita ou não.
+help_ghast: Defina se Ghasts irrita ou não.
+help_phantom: Defina se Phantoms aparecem ou não.
+help_pillager_patrol: Defina se as Patrulhas de Pillager surgem ou não.
+help_wandering_traderR: Defina se Wandering Traders aparecem ou não.
+help_update: Verifique se há atualizações.
+help_reload: Recarregar arquivo de configuração.
+help_update_check: Defina a verificação de atualização automática.
+help_book: Dá a você um livro para definir configurações com um clique.
+boolean: Argumento deve ser booleano. Uso
+nocheck: nao irei checar por updates!
+yescheck: irei checar por updates!
+newvers:
+  message: Há uma nova versão do <MyPlugin> disponível!
+  old_vers:          Sua versão
+  new_vers: Versão mais recente
+  notes: Notas
+  please_update: Por favor, atualize para a versão mais recente.
+  download: Download
+  donate: Doar
+curvers: Versao esta atualizada!
+debugtrue: Depuração definida como boolean.
+debuguse: Alterna temporariamente a depuração.
+help_book: Dá a você um livro de configurações.

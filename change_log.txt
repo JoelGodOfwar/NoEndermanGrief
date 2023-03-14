@@ -1,0 +1,29 @@
+1.14_1.0.6
+D1	Fixed UpdateChecker notification.
+D2	
+1.14_1.0.5
+D1	Fixed an issue where console sending command NEG would cause an exception.
+D2	Fixed an issue where sending command as console would cause errors.
+D3	Testing a new update checker. Tests on going, not added to release version.
+D4	Added new config option longpluginname under console category. true=NoEndermanGrief, false=NEG
+1.14_1.0.4
+D1	Minor changes to logging, added 1.19.x book support.
+D2	Fixed an error that would overwrite the config
+1.14_1.0.3
+D1-fixed an issue with language files not being version checked properly.
+D2-Fixed issue with reload command. added 1.18 support for book command.
+D3-Changed permission check on entity commands.
+
+1.14_1.0.2
+config reset on plugin reload fixed.
+New UpdateChecker, should remove any freezing on /neg update
+Fixed api version issue
+Split lang.yml into separate files.
+Added Ghast Grief protection
+Added Phantom Spawn protection
+Added Pillager Patrol spawn protection
+Added a config book /neg book
+Added noendermangrief.admin permission
+Setting configs using commands/book auto reloads configs.
+Added tab complete for commands.
+Minor tweaks in code.
