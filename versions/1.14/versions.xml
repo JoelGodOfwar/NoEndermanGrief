@@ -1,13 +1,11 @@
 <versions>
   <release>
-    <version>1.14_1.0.5</version>
-    <notes>D1	Fixed an issue where console sending command NEG would cause an exception.
-D2	Fixed an issue where sending command as console would cause errors.
-D3	Testing a new update checker. Tests on going, not added to release version.
-D4	Added new config option longpluginname under console category. true=NoEndermanGrief, false=NEG</notes>
+    <version>1.14_1.0.6</version>
+    <notes>D1	Fixed UpdateChecker notification.
+D2	Found bug reported in 1.14_1.0.4, removed all instances of "System.out.PrintLn"</notes>
   </release>
   <developer>
-    <version>1.14_1.0.6.D1</version>
-    <notes>D1	Fixed UpdateChecker notification.</notes>
+    <version>1.14_1.0.7.D1</version>
+    <notes>D1	</notes>
   </developer>
 </versions>
