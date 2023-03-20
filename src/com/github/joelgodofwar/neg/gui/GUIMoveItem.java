@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.joelgodofwar.neg.NoEndermanGrief;
  
@@ -14,7 +15,11 @@ public class GUIMoveItem implements Listener {
 			Trader = false, Pillager = false, Ender = false,
 			Ghast = false, Horse = false, Phantom = false,
 			Creeper = false;
- 
+	JavaPlugin plugin;
+	
+	public GUIMoveItem(JavaPlugin plugin){
+		this.plugin = plugin;
+	}
 
 	@EventHandler
     public void clickEvent(InventoryClickEvent e){
@@ -118,11 +123,7 @@ public class GUIMoveItem implements Listener {
 				break;
                 
             }
- 
- 
-            
         }
- 
     }
  
 }

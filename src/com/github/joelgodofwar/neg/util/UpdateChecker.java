@@ -10,14 +10,16 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+@SuppressWarnings("unused")
 public class UpdateChecker {
     private static int project;
     private URL checkURL;
     private String newVersion;
+    private String curVersion;
     private String newMinVers;
     private String oldVersion;
     private String oldMinVers;
-    private JavaPlugin plugin;
+	private JavaPlugin plugin;
 	String[] strVersionNew; // [0]=1.14 [1]=1.0.0.?
 	String[] strVersionCurrent; // [0]=1.14 [1]=1.0.0.?
 
@@ -25,18 +27,18 @@ public class UpdateChecker {
     public UpdateChecker(JavaPlugin plugin, int projectID, String verURL) {
         this.plugin = plugin;
         project = projectID;
-        newVersion = plugin.getDescription().getVersion();
+        curVersion = plugin.getDescription().getVersion();
         try {
-            checkURL = new URL(verURL.replace("{vers}", newVersion.substring(0, 4)));
+            checkURL = new URL(verURL.replace("{vers}", curVersion.substring(0, 4)));
         }catch(MalformedURLException e) {
             Bukkit.getLogger().warning(Ansi.RED + "Could not connect to update server.");
             //Bukkit.getPluginManager().disablePlugin(plugin);
         }
     }
     public UpdateChecker(String plugin, int projectID, String verURL) {
-    	newVersion = plugin;
+    	curVersion = plugin;
         try {
-            checkURL = new URL(verURL.replace("{vers}", newVersion.substring(0, 4)));
+            checkURL = new URL(verURL.replace("{vers}", curVersion.substring(0, 4)));
         }catch(MalformedURLException e) {
             Bukkit.getLogger().warning(Ansi.RED + "Could not connect to update server.");
             //Bukkit.getPluginManager().disablePlugin(plugin);
@@ -54,7 +56,7 @@ public class UpdateChecker {
         //System.out.println("newVersion=" + newVersion);
         Version newVers = new Version(newVersion);
         
-        strVersionCurrent = plugin.getDescription().getVersion().split("_");
+        strVersionCurrent = curVersion.split("_");
 
         oldMinVers = strVersionCurrent[0];
         oldVersion = strVersionCurrent[1];
