@@ -6,7 +6,7 @@ D2	Found bug reported in 1.14_1.0.4, removed all instances of "System.out.PrintL
   </release>
   <developer>
     <version>1.14_1.0.7.D2</version>
-    <notes>DD1	i18n language files.
+    <notes>D1	i18n language files.
 D2	Ready for user testing of GUI Menu Configs. "/NEG config" Requires noendermangrief.admin permission</notes>
   </developer>
 </versions>
