@@ -1,7 +1,7 @@
 # NoEndermanGrief
 
 ![Alt text](image 
-https://i.imgur.com%2FekdCacH.png)
+https://i.imgur.com/ekdCacH.png)
 
 Download Links
 
