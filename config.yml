@@ -7,7 +7,7 @@ auto_update_check: true
 debug: false
 # Set the language to use, en_US, nl_NL, lol_US, fr_FR, de_DE, cs-CZ, pt_BR
 lang: en_US
-
+# 
 console:
 # Enables fancy ANSI colors in console. (Disable if you're getting weird characters in the console)
   colorful_console: true
