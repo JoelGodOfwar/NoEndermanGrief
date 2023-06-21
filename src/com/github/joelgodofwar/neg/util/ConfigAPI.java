@@ -50,33 +50,33 @@ public class ConfigAPI  {
 		}
 		String daString2 = config.getString("auto_update_check").replace("'", "") + ",";
 		if(daString2.contains("true")){
-			NoEndermanGrief.UpdateCheck = true;
+			//NoEndermanGrief.UpdateCheck = true;
 		}else{
-			NoEndermanGrief.UpdateCheck = false;
+			//NoEndermanGrief.UpdateCheck = false;
 		}
 		String daString3 = config.getString("skeleton_horse_spawn").replace("'", "") + ",";
 		if(daString3.contains("true")){
-			NoEndermanGrief.allowSpawnSH = true;
+			//NoEndermanGrief.allowSpawnSH = true;
 		}else{
-			NoEndermanGrief.allowSpawnSH = false;
+			//NoEndermanGrief.allowSpawnSH = false;
 		}
 		String daString5 = config.getString("wandering_trader").replace("'", "") + ",";
 		if(daString5.contains("true")){
-			NoEndermanGrief.allowSpawnWT = true;
+			//NoEndermanGrief.allowSpawnWT = true;
 		}else{
-			NoEndermanGrief.allowSpawnWT = false;
+			//NoEndermanGrief.allowSpawnWT = false;
 		}
 		String daString4 = config.getString("enderman_grief").replace("'", "") + ",";
 		if(daString4.contains("true")){
-			NoEndermanGrief.allowPickup = true;
+			//NoEndermanGrief.allowPickup = true;
 		}else{
-			NoEndermanGrief.allowPickup = false;
+			//NoEndermanGrief.allowPickup = false;
 		}
 		String daString6 = config.getString("enderman_grief").replace("'", "") + ",";
 		if(daString6.contains("true")){
-			NoEndermanGrief.allowExplode = true;
+			//NoEndermanGrief.allowExplode = true;
 		}else{
-			NoEndermanGrief.allowExplode = false;
+			//NoEndermanGrief.allowExplode = false;
 		}
 		String daString7 = config.getString("lang", "en_US").replace("'", "");
 		NoEndermanGrief.daLang = daString7;

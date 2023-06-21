@@ -7,15 +7,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,7 +55,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import com.github.joelgodofwar.neg.commands.testCommand;
 import com.github.joelgodofwar.neg.gui.GUIMoveItem;
-import com.github.joelgodofwar.neg.i18n.Language;
+import com.github.joelgodofwar.neg.i18n.Translator;
 //import com.github.joelgodofwar.jgowlib.utils.bukkit.Metrics;
 import com.github.joelgodofwar.neg.nms.SettingsBook;
 import com.github.joelgodofwar.neg.nms.SettingsBook_v1_14_R1;
@@ -70,55 +75,56 @@ import com.github.joelgodofwar.neg.util.Utils;
 import com.github.joelgodofwar.neg.util.VersionChecker;
 import com.github.joelgodofwar.neg.util.YmlConfiguration;
 
-
 @SuppressWarnings("unused")
 public class NoEndermanGrief extends JavaPlugin implements Listener{
+	/** Languages: čeština (cs_CZ), Deutsch (de_DE), English (en_US), Español (es_ES), Español (es_MX), Français (fr_FR), Italiano (it_IT), Magyar (hu_HU), 日本語 (ja_JP), 한국어 (ko_KR), Lolcat (lol_US), Melayu (my_MY), Nederlands (nl_NL), Polski (pl_PL), Português (pt_BR), Русский (ru_RU), Svenska (sv_SV), Türkçe (tr_TR), 中文(简体) (zh_CN), 中文(繁體) (zh_TW) */
 	public final static Logger logger = Logger.getLogger("Minecraft");
-	public static String daLang;
-	public static boolean cancelbroadcast;
-	public static boolean debug;
-	public static boolean allowSpawnSH;
-	public static boolean allowSpawnWT;
-	public static boolean allowPickup;
-	public static boolean allowExplode;
-	File langFile;
-	public FileConfiguration lang;
+	static String THIS_NAME;
+	static String THIS_VERSION;
 	/** update checker variables */
-	public String updateurl = "https://github.com/JoelGodOfwar/NoEndermanGrief/raw/master/versions/{vers}/version.txt";
-	public String newVerMsg;
 	public int projectID = 71236; // https://spigotmc.org/resources/71236
+	public String githubURL = "https://github.com/JoelGodOfwar/NoEndermanGrief/raw/master/versions/1.14/versions.xml";
 	public boolean UpdateAvailable =  false;
 	public String UColdVers;
 	public String UCnewVers;
 	public static boolean UpdateCheck;
-	public String thisName = this.getName();
-	public String thisVersion = this.getDescription().getVersion();
-	public String DownloadLink = "https://www.spigotmc.org/resources/no-enderman-grief2.71236";
+    public String DownloadLink = "https://www.spigotmc.org/resources/no-enderman-grief2.71236";
 	/** end update checker variables */
+	public static String daLang;
+	public static boolean cancelbroadcast;
+	public static boolean debug;
+	File langFile;
+	public FileConfiguration lang;
 	YmlConfiguration config = new YmlConfiguration();
 	YamlConfiguration oldconfig = new YamlConfiguration();
 	boolean colorful_console;
 	private SettingsBook setingsbook;
 	private boolean correctVersion = true;
 	String configVersion = "1.0.6";
-	String langVersion = "1.0.6";
-	String pluginName = this.getDescription().getName();
-	Language lang2;
+	//String langVersion = "1.0.6";
+	String pluginName = THIS_NAME;
+	Translator lang2;
+	private Set<String> triggeredPlayers = new HashSet<>();
 	
 	@Override // TODO: onEnable
 	public void onEnable(){
-		UpdateCheck = getConfig().getBoolean("auto_update_check", true);
+		long startTime = System.currentTimeMillis();
+		UpdateCheck = getConfig().getBoolean("auto_update_check", true); 	
 		debug = getConfig().getBoolean("debug", false);
 		daLang = getConfig().getString("lang", "en_US");
 		config = new YmlConfiguration();
 		colorful_console = getConfig().getBoolean("console.colorful_console", true);
+		lang2 = new Translator(daLang, getDataFolder().toString());
+		THIS_NAME = this.getDescription().getName();
+		THIS_VERSION = this.getDescription().getVersion();
 		if(!getConfig().getBoolean("console.longpluginname", true)) {
 			pluginName = "NEG";
+		}else {
+			pluginName = THIS_NAME;
 		}
-		lang2 = new Language(daLang);
-		PluginDescriptionFile pdfFile = this.getDescription();
+		
 		logger.info(Ansi.YELLOW + "**************************************" + Ansi.RESET);
-		logger.info(Ansi.GREEN + pdfFile.getName() + " v" + pdfFile.getVersion() + Ansi.RESET + " Loading...");
+		logger.info(Ansi.GREEN + THIS_NAME + " v" + THIS_VERSION + Ansi.RESET + " Loading...");
 		
 		/** DEV check **/
 		File jarfile = this.getFile().getAbsoluteFile();
@@ -130,59 +136,11 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 		}
 		
 		logger.info("Checking lang files...");
-		/** Lang file check */
-		/**if(debug){logDebug("datafolder=" + getDataFolder());}
-		langFile = new File(getDataFolder() + "" + File.separatorChar + "lang" + File.separatorChar, daLang + ".yml");//\
-		if(debug){logDebug("langFilePath=" + langFile.getPath());}
-		if(!langFile.exists()){                                  // checks if the yaml does not exist
-			langFile.getParentFile().mkdirs();                  // creates the /plugins/<pluginName>/ directory if not found
-			saveResource("lang" + File.separatorChar + "cs_CZ.yml", true);
-			saveResource("lang" + File.separatorChar + "de_DE.yml", true);
-			saveResource("lang" + File.separatorChar + "en_US.yml", true);
-			saveResource("lang" + File.separatorChar + "fr_FR.yml", true);
-			saveResource("lang" + File.separatorChar + "lol_US.yml", true);
-			saveResource("lang" + File.separatorChar + "nl_NL.yml", true);
-			saveResource("lang" + File.separatorChar + "pt_BR.yml", true);
-			log("lang file not found! copied cs_CZ.yml, de_DE.yml, en_US.yml, es_MX.yml, fr_FR.yml, nl_NL.yml, and pt_BR.yml to "
-			+ getDataFolder() + "" + File.separatorChar + "lang");
-			//ConfigAPI.copy(getResource("lang.yml"), langFile); // copies the yaml from your jar to the folder /plugin/<pluginName>
-        }
-		lang = new YamlConfiguration();
-		try {
-			lang.load(langFile);
-		} catch (IOException | InvalidConfigurationException e) {
-			e.printStackTrace();
-		}
-		logger.info("Checking lang files version...");
-		String checklangversion = lang.getString("version", "1.0.0");
-		if(checklangversion != null){
-			if(!checklangversion.equalsIgnoreCase(langVersion)){
-				saveResource("lang" + File.separatorChar + "cs_CZ.yml", true);
-				saveResource("lang" + File.separatorChar + "de_DE.yml", true);
-				saveResource("lang" + File.separatorChar + "en_US.yml", true);
-				saveResource("lang" + File.separatorChar + "fr_FR.yml", true);
-				saveResource("lang" + File.separatorChar + "lol_US.yml", true);
-				saveResource("lang" + File.separatorChar + "nl_NL.yml", true);
-				saveResource("lang" + File.separatorChar + "pt_BR.yml", true);
-				log("lang file outdated! copied cs_CZ.yml, de_DE.yml, en_US.yml, es_MX.yml, fr_FR.yml, nl_NL.yml, and pt_BR.yml to "
-						+ getDataFolder() + "" + File.separatorChar + "lang");
-			}
-		}else{
-			saveResource("lang" + File.separatorChar + "cs_CZ.yml", true);
-			saveResource("lang" + File.separatorChar + "de_DE.yml", true);
-			saveResource("lang" + File.separatorChar + "en_US.yml", true);
-			saveResource("lang" + File.separatorChar + "fr_FR.yml", true);
-			saveResource("lang" + File.separatorChar + "lol_US.yml", true);
-			saveResource("lang" + File.separatorChar + "nl_NL.yml", true);
-			saveResource("lang" + File.separatorChar + "pt_BR.yml", true);
-			log("lang file not found! copied cs_CZ.yml, de_DE.yml, en_US.yml, es_MX.yml, fr_FR.yml, nl_NL.yml, and pt_BR.yml to "
-					+ getDataFolder() + "" + File.separatorChar + "lang");
-		}//*/
-		/** Lang file check */
+		
 		if( !(Double.parseDouble( getMCVersion().substring(0, 4) ) >= 1.14) ){
 			logger.info(Ansi.RED + "WARNING!" + Ansi.GREEN + "*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!" + Ansi.RESET);
 			logger.info(Ansi.RED + "WARNING! " + Ansi.YELLOW + get("neg.message.server_not_version") + Ansi.RESET);
-			logger.info(Ansi.RED + "WARNING! " + Ansi.YELLOW + this.getName() + " v" + this.getDescription().getVersion() + " disabling." + Ansi.RESET);
+			logger.info(Ansi.RED + "WARNING! " + Ansi.YELLOW + THIS_NAME + " v" + THIS_VERSION + " disabling." + Ansi.RESET);
 			logger.info(Ansi.RED + "WARNING!" + Ansi.GREEN + "*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!" + Ansi.RESET);
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
@@ -262,11 +220,6 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			logWarn("Could not load config.yml");
 			e1.printStackTrace();
 		}
-
-		allowSpawnSH = getConfig().getBoolean("skeleton_horse_spawn");
-		allowSpawnWT = getConfig().getBoolean("wandering_trader_spawn");
-		allowPickup = getConfig().getBoolean("enderman_grief");
-		allowExplode = getConfig().getBoolean("creeper_grief");
 		
 		if(debug){
 			logDebug("Config.yml dump");
@@ -289,31 +242,41 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 		if(UpdateCheck){
 			try {
 				Bukkit.getConsoleSender().sendMessage("Checking for updates...");
-				UpdateChecker updater = new UpdateChecker(this, projectID, updateurl);
+				VersionChecker updater = new VersionChecker(this, projectID, githubURL);
 				if(updater.checkForUpdates()) {
+					/** Update available */
 					UpdateAvailable = true; // TODO: Update Checker
 					UColdVers = updater.oldVersion();
 					UCnewVers = updater.newVersion();
 					
-					log(Level.WARNING, "*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
-					log(Level.WARNING, "* " + get("neg.version.message").toString().replace("<MyPlugin>", this.getName()) );
-					log(Level.WARNING, "* " + get("neg.version.old_vers") + ChatColor.RED + UColdVers );
-					log(Level.WARNING, "* " + get("neg.version.new_vers") + ChatColor.GREEN + UCnewVers );
-					log(Level.WARNING, "*");
-					log(Level.WARNING, "* " + get("neg.version.please_update") );
-					log(Level.WARNING, "*");
-					log(Level.WARNING, "* " + get("neg.version.download") + ": https://www.spigotmc.org/resources/no-enderman-grief2.71236/history");
-					log(Level.WARNING, "* " + get("neg.version.donate") + ": https://ko-fi.com/joelgodofwar");
-					log(Level.WARNING, "*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
-					//Bukkit.getConsoleSender().sendMessage(newVerMsg.replace("{oVer}", UColdVers).replace("{nVer}", UCnewVers));
-					//Bukkit.getConsoleSender().sendMessage(Ansi.GREEN + UpdateChecker.getResourceUrl() + Ansi.RESET);
+					log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+					log("* " + get("neg.version.message").toString().replace("<MyPlugin>", THIS_NAME) );
+					log("* " + get("neg.version.old_vers") + ChatColor.RED + UColdVers );
+					log("* " + get("neg.version.new_vers") + ChatColor.GREEN + UCnewVers );
+					log("*");
+					log("* " + get("neg.version.please_update") );
+					log("*");
+					log("* " + get("neg.version.download") + ": " + DownloadLink + "/history");
+					log("* " + get("neg.version.donate") + ": https://ko-fi.com/joelgodofwar");
+					log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
 				}else{
+					/** Up to date */
+					log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+					log("* " + get("neg.version.curvers"));
+					log("* " + get("neg.version.donate") + ": https://ko-fi.com/joelgodofwar");
+					log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
 					UpdateAvailable = false;
 				}
 			}catch(Exception e) {
-				Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Could not process update check");
+				/** Error */
+				log(get("neg.version.update.error"));
 				e.printStackTrace();
 			}
+		}else {
+			/** auto_update_check is false so nag. */
+			log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+			log("* " + get("neg.version.donate.message") + ": https://ko-fi.com/joelgodofwar");
+			log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
 		}
 		/** end update checker */
 		
@@ -326,7 +289,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 		logDebug("lang=" + daLang);
 		getServer().getPluginManager().registerEvents(this, this);
 		getServer().getPluginManager().registerEvents(new GUIMoveItem(this), this);  // Comment out for release versions, un comment for Dev builds.
-		consoleInfo(Ansi.BOLD + "ENABLED" + Ansi.RESET);
+		consoleInfo(Ansi.BOLD + "ENABLED" + Ansi.RESET + " - Loading took " + LoadTime(startTime));
 		
 		
 		this.correctVersion = this.setupBook();
@@ -423,9 +386,8 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 	}
 	
 	public void consoleInfo(String state) {
-		PluginDescriptionFile pdfFile = this.getDescription();
 		logger.info(Ansi.YELLOW + "**************************************" + Ansi.RESET);
-		logger.info(Ansi.GREEN + pdfFile.getName() + " v" + pdfFile.getVersion() + Ansi.RESET + " is " + state);
+		logger.info(Ansi.GREEN + THIS_NAME + " v" + THIS_VERSION + Ansi.RESET + " is " + state);
 		logger.info(Ansi.YELLOW + "**************************************" + Ansi.RESET);
 	}
 	
@@ -439,10 +401,10 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
     	logger.log(lvl, dalog);
     }
 	public void logDebug(String dalog){
-		log(" " + this.getDescription().getVersion() + Ansi.RED + Ansi.BOLD + " [DEBUG] " + Ansi.RESET + dalog);
+		log(" " + THIS_VERSION + Ansi.RED + Ansi.BOLD + " [DEBUG] " + Ansi.RESET + dalog);
 	}
 	public void logWarn(String dalog){
-		log(" " + this.getDescription().getVersion() + Ansi.RED + Ansi.BOLD + " [WARNING] " + Ansi.RESET + dalog);
+		log(" " + THIS_VERSION + Ansi.RED + Ansi.BOLD + " [WARNING] " + Ansi.RESET + dalog);
 	}
 	
 	@EventHandler
@@ -457,7 +419,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			if(!getConfig().getBoolean("enderman_grief", false)){
 				e.setCancelled(true);
 			}
-			if(debug){log("" + get("entity.enderman.pickup") + e.getBlock().getType() + " at " + e.getBlock().getLocation());} //
+			if(debug){log("" + get("neg.entity.enderman.pickup") + e.getBlock().getType() + " at " + e.getBlock().getLocation());} //
 			return;
 		}
 	}
@@ -468,7 +430,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			if(!getConfig().getBoolean("creeper_grief", false)){
 				e.setCancelled(true);
 			}
-			if(debug){log("" + get("entity.creeper.explode") + e.getLocation().getBlockX() + ", " + e.getLocation().getBlockZ());} //
+			if(debug){log("" + get("neg.entity.creeper.explode") + e.getLocation().getBlockX() + ", " + e.getLocation().getBlockZ());} //
 			return;
 		}
 		if (e.getEntity().getType() == EntityType.FIREBALL  && ((Fireball) e.getEntity()).getShooter() instanceof Ghast) {
@@ -478,7 +440,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 				((Fireball) fireball).setYield(0F);
 				e.setCancelled(true);
 			}
-			if(debug){log("" + get("entity.ghast.explode") + e.getLocation().getBlockX() + ", " + e.getLocation().getBlockZ());} //
+			if(debug){log("" + get("neg.entity.ghast.explode") + e.getLocation().getBlockX() + ", " + e.getLocation().getBlockZ());} //
 			return;
 		}
 		
@@ -488,16 +450,31 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 	public void onPlayerJoinEvent(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		if( UpdateAvailable && ( player.isOp() || player.hasPermission("noendermangrief.showUpdateAvailable") || player.hasPermission("noendermangrief.admin") ) ){
-			String links = "[\"\",{\"text\":\"Download\",\"bold\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"<DownloadLink>/history\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Download the latest version.\"}},{\"text\":\" \",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Download the latest version.\"}},{\"text\":\"| \"},{\"text\":\"Donate\",\"bold\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://ko-fi.com/joelgodofwar\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Donate to the plugin maker.\"}},{\"text\":\" | \"},{\"text\":\"ChangeLog\",\"bold\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"<DownloadLink>/updates\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"View the ChangeLog.\"}}]";
-			links = links.replace("<DownloadLink>", DownloadLink);
+			String links = "[\"\",{\"text\":\"<Download>\",\"bold\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"<DownloadLink>/history\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"<please_update>\"}},{\"text\":\" \",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"<please_update>\"}},{\"text\":\"| \"},{\"text\":\"<Donate>\",\"bold\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://ko-fi.com/joelgodofwar\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"<Donate_msg>\"}},{\"text\":\" | \"},{\"text\":\"<Notes>\",\"bold\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"<DownloadLink>/updates\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"<Notes_msg>\"}}]";
+			links = links.replace("<DownloadLink>", DownloadLink).replace("<Download>", get("neg.version.download"))
+					.replace("<Donate>", get("neg.version.donate")).replace("<please_update>", get("neg.version.please_update"))
+					.replace("<Donate_msg>", get("neg.version.donate.message")).replace("<Notes>", get("neg.version.notes"))
+					.replace("<Notes_msg>", get("neg.version.notes.message"));
 			String versions = "" + ChatColor.GRAY + get("neg.version.new_vers") + ": " + ChatColor.GREEN + "{nVers} | " + get("neg.version.old_vers") + ": " + ChatColor.RED + "{oVers}";
-			player.sendMessage("" + ChatColor.GRAY + get("neg.version.message").toString().replace("<MyPlugin>", ChatColor.GOLD + this.getName() + ChatColor.GRAY) );
+			player.sendMessage("" + ChatColor.GRAY + get("neg.version.message").toString().replace("<MyPlugin>", ChatColor.GOLD + THIS_NAME + ChatColor.GRAY) );
 			Utils.sendJson(player, links);
 			player.sendMessage(versions.replace("{nVers}", UCnewVers).replace("{oVers}", UColdVers));
 		}
-		
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd");
+		LocalDate localDate = LocalDate.now();
+		String daDay = dtf.format(localDate);
+
+		if (daDay.equals("04/16")) {
+		    String playerId = player.getUniqueId().toString();
+		    if (!triggeredPlayers.contains(playerId)) {
+		        if (isPluginRequired(THIS_NAME)) {
+		            player.sendTitle("Happy Birthday Mom", "I miss you - 4/16/1954-12/23/2022", 10, 70, 20);
+		        }
+		        triggeredPlayers.add(playerId);
+		    }
+		}
 		if( player.getDisplayName().equals("JoelYahwehOfWar") ||  player.getDisplayName().equals("JoelGodOfWar") ){
-			player.sendMessage(this.getName() + " " + this.getDescription().getVersion() + " Hello father!");
+			player.sendMessage(THIS_NAME + " " + THIS_VERSION + " Hello father!");
 		}
 	}
 	
@@ -506,25 +483,25 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 		Entity entity = e.getEntity();
 		if (entity instanceof SkeletonHorse){
 			if(!getConfig().getBoolean("skeleton_horse_spawn", false)){
-				if(debug){log("" + get("entity.skeleton_horse") + e.getLocation());} //
+				if(debug){log("" + get("neg.entity.skeleton_horse") + e.getLocation());} //
 				e.setCancelled(true);
 			}
 		}
 		if (entity instanceof WanderingTrader){
 			if(!getConfig().getBoolean("wandering_trader_spawn", false)){
-				if(debug){log("" + get("entity.wandering_trader") + e.getLocation());} //
+				if(debug){log("" + get("neg.entity.wandering_trader") + e.getLocation());} //
 				e.setCancelled(true);
 			}
 		}
 		if (entity instanceof Phantom){
 			if(!getConfig().getBoolean("phantom_spawn", false)){
-				if(debug){log("" + get("entity.phantom") + e.getLocation());} //
+				if(debug){log("" + get("neg.entity.phantom") + e.getLocation());} //
 				e.setCancelled(true);
 			}
 		}
 		if(e.getSpawnReason() == SpawnReason.PATROL) {
 			if(!getConfig().getBoolean("pillager_patrol_spawn", false)){
-				if(debug){log("" + get("entity.pillager_patrol") + e.getLocation());} //
+				if(debug){log("" + get("neg.entity.pillager_patrol") + e.getLocation());} //
 				e.setCancelled(true);
 			}
 		}
@@ -543,29 +520,29 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 						/** Command code */
 						sender.sendMessage(ChatColor.GREEN + "[]===============[" + ChatColor.YELLOW + "NoEndermanGrief" + ChatColor.GREEN + "]===============[]");
 						sender.sendMessage(ChatColor.GOLD + " ");
-						sender.sendMessage(ChatColor.RED + " " + get("neg.version.donate") + ChatColor.GREEN + ": https://ko-fi.com/joelgodofwar" + ChatColor.RESET);
+						sender.sendMessage(ChatColor.RED + " " + get("neg.version.donate.message") + ChatColor.GREEN + ": https://ko-fi.com/joelgodofwar" + ChatColor.RESET);
 						sender.sendMessage(ChatColor.GOLD + " ");
 						if( sender.isOp()||sender.hasPermission("noendermangrief.op") || sender.hasPermission("noendermangrief.admin") ){
 							sender.sendMessage(ChatColor.WHITE + " -<[" + ChatColor.AQUA + " OP Commands " + ChatColor.WHITE + "}>-");
-							sender.sendMessage(ChatColor.GOLD + " /NEG update - " + get("command.update"));//Check for update.");
-							sender.sendMessage(ChatColor.GOLD + " /NEG reload - " + get("command.reload") );//Reload config file.");
+							sender.sendMessage(ChatColor.GOLD + " /NEG update - " + get("neg.command.update"));//Check for update.");
+							sender.sendMessage(ChatColor.GOLD + " /NEG reload - " + get("neg.command.reload") );//Reload config file.");
 							if( sender.isOp() || sender.hasPermission("noendermangrief.toggledebug") || 
 									!(sender instanceof Player) || sender.hasPermission("noendermangrief.admin") ){
-								sender.sendMessage(ChatColor.GOLD + " /NEG toggledebug - " + get("neg.message.debuguse"));
+								sender.sendMessage(ChatColor.GOLD + " /NEG toggledebug - " + get("neg.message.debuguse") );
 							}
 						}
 						if( sender.hasPermission("noendermangrief.admin") || !(sender instanceof Player) ){
 							sender.sendMessage(ChatColor.WHITE + " -<[" + ChatColor.YELLOW + " Admin Commands " + ChatColor.WHITE + "}>-");
 							if( sender instanceof Player ) {
-								sender.sendMessage(ChatColor.GOLD + " /NEG BOOK - " + get("command.book"));
+								sender.sendMessage(ChatColor.GOLD + " /NEG BOOK - " + get("neg.command.book"));
 							}
-							sender.sendMessage(ChatColor.GOLD + " /NEG EG true/false - " + get("command.endermen"));
-							sender.sendMessage(ChatColor.GOLD + " /NEG SH true/false - " + get("command.skeleton_horse"));
-							sender.sendMessage(ChatColor.GOLD + " /NEG CG true/false - " + get("command.creeper"));
-							sender.sendMessage(ChatColor.GOLD + " /NEG WT true/false - " + get("command.wandering_trader"));
-							sender.sendMessage(ChatColor.GOLD + " /NEG GG true/false - " + get("command.ghast"));
-							sender.sendMessage(ChatColor.GOLD + " /NEG PG true/false - " + get("command.phantom"));
-							sender.sendMessage(ChatColor.GOLD + " /NEG PP true/false - " + get("command.pillager_patrol"));
+							sender.sendMessage(ChatColor.GOLD + " /NEG EG true/false - " + get("neg.command.endermen"));
+							sender.sendMessage(ChatColor.GOLD + " /NEG SH true/false - " + get("neg.command.skeleton_horse"));
+							sender.sendMessage(ChatColor.GOLD + " /NEG CG true/false - " + get("neg.command.creeper"));
+							sender.sendMessage(ChatColor.GOLD + " /NEG WT true/false - " + get("neg.command.wandering_trader"));
+							sender.sendMessage(ChatColor.GOLD + " /NEG GG true/false - " + get("neg.command.ghast"));
+							sender.sendMessage(ChatColor.GOLD + " /NEG PG true/false - " + get("neg.command.phantom"));
+							sender.sendMessage(ChatColor.GOLD + " /NEG PP true/false - " + get("neg.command.pillager_patrol"));
 						}
 						sender.sendMessage(ChatColor.GREEN + "[]===============[" + ChatColor.YELLOW + "NoEndermanGrief" + ChatColor.GREEN + "]===============[]");
 						return true;
@@ -641,53 +618,59 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			            //Menu Options(Items)
 					  	ItemStack btnSpace = new ItemStack(Material.AIR);
 			            ItemStack btnUpdate = new ItemStack(Material.WRITABLE_BOOK);
-			            ItemStack btnUpdateTrue = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-			            ItemStack btnUpdateFalse = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-			            
+			            //ItemStack btnUpdateTrue = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
+			            ItemStack btnUpdateTrue = new ItemStack(getConfig().getBoolean("auto_update_check") ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE);
+			            ItemStack btnUpdateFalse = new ItemStack(getConfig().getBoolean("auto_update_check") ? Material.GRAY_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
+
 			            ItemStack btnLang = new ItemStack(Material.WRITABLE_BOOK);
-			            ItemStack btnLangCZ = new ItemStack(Material.PAPER);
-			            ItemStack btnLangDE = new ItemStack(Material.PAPER);
-			            ItemStack btnLangEN = new ItemStack(Material.PAPER);
-			            ItemStack btnLangFR = new ItemStack(Material.PAPER);
-			            ItemStack btnLangLOL = new ItemStack(Material.PAPER);
-			            ItemStack btnLangNL = new ItemStack(Material.PAPER);
-			            ItemStack btnLangBR = new ItemStack(Material.PAPER);
+			            ItemStack btnLangCZ = new ItemStack(getConfig().getString("lang").equalsIgnoreCase("cs_CZ") ? Material.LIME_WOOL : Material.LIGHT_GRAY_WOOL);
+			            ItemStack btnLangDE = new ItemStack(getConfig().getString("lang").equalsIgnoreCase("de_DE") ? Material.LIME_WOOL : Material.LIGHT_GRAY_WOOL);
+			            ItemStack btnLangEN = new ItemStack(getConfig().getString("lang").equalsIgnoreCase("en_US") ? Material.LIME_WOOL : Material.LIGHT_GRAY_WOOL);
+			            ItemStack btnLangFR = new ItemStack(getConfig().getString("lang").equalsIgnoreCase("fr_FR") ? Material.LIME_WOOL : Material.LIGHT_GRAY_WOOL);
+			            ItemStack btnLangLOL = new ItemStack(getConfig().getString("lang").equalsIgnoreCase("lol_US") ? Material.LIME_WOOL : Material.LIGHT_GRAY_WOOL);
+			            ItemStack btnLangNL = new ItemStack(getConfig().getString("lang").equalsIgnoreCase("nl_NL") ? Material.LIME_WOOL : Material.LIGHT_GRAY_WOOL);
+			            ItemStack btnLangBR = new ItemStack(getConfig().getString("lang").equalsIgnoreCase("pt_BR") ? Material.LIME_WOOL : Material.LIGHT_GRAY_WOOL);
 			            
 			            ItemStack btnDebug =  new ItemStack(Material.WRITABLE_BOOK);
-			            ItemStack btnDebugTrue =  new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-			            ItemStack btnDebugFalse =  new ItemStack(Material.RED_STAINED_GLASS_PANE);
+			            ItemStack btnDebugTrue =  new ItemStack(getConfig().getBoolean("debug") ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE);
+			            ItemStack btnDebugFalse =  new ItemStack(getConfig().getBoolean("debug") ? Material.GRAY_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
 			            
 			            ItemStack btnConsole = new ItemStack(Material.WRITABLE_BOOK);
-			            ItemStack btnConsoleTrue =  new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-			            ItemStack btnConsoleFalse =  new ItemStack(Material.RED_STAINED_GLASS_PANE);
+			            ItemStack btnConsoleTrue =  new ItemStack(getConfig().getBoolean("console.colorful_console") ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE);
+			            ItemStack btnConsoleFalse =  new ItemStack(getConfig().getBoolean("console.colorful_console") ? Material.GRAY_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
+			            
+			            ItemStack btnLongname = new ItemStack(Material.WRITABLE_BOOK);
+			            ItemStack btnLongnameTrue =  new ItemStack(getConfig().getBoolean("console.longpluginname") ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE);
+			            ItemStack btnLongnameFalse =  new ItemStack(getConfig().getBoolean("console.longpluginname") ? Material.GRAY_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
+			            
 			            
 			            ItemStack btnTrader = new ItemStack(Material.WRITABLE_BOOK);
-			            ItemStack btnTraderTrue =  new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-			            ItemStack btnTraderFalse =  new ItemStack(Material.RED_STAINED_GLASS_PANE);
+			            ItemStack btnTraderTrue =  new ItemStack(getConfig().getBoolean("wandering_trader_spawn") ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE);
+			            ItemStack btnTraderFalse =  new ItemStack(getConfig().getBoolean("wandering_trader_spawn") ? Material.GRAY_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
 			            
 			            ItemStack btnPillager = new ItemStack(Material.WRITABLE_BOOK);
-			            ItemStack btnPillagerTrue =  new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-			            ItemStack btnPillagerFalse =  new ItemStack(Material.RED_STAINED_GLASS_PANE);
+			            ItemStack btnPillagerTrue =  new ItemStack(getConfig().getBoolean("pillager_patrol_spawn") ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE);
+			            ItemStack btnPillagerFalse =  new ItemStack(getConfig().getBoolean("pillager_patrol_spawn") ? Material.GRAY_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
 			            
 			            ItemStack btnEnder = new ItemStack(Material.WRITABLE_BOOK);
-			            ItemStack btnEnderTrue =  new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-			            ItemStack btnEnderFalse =  new ItemStack(Material.RED_STAINED_GLASS_PANE);
+			            ItemStack btnEnderTrue =  new ItemStack(getConfig().getBoolean("enderman_grief") ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE);
+			            ItemStack btnEnderFalse =  new ItemStack(getConfig().getBoolean("enderman_grief") ? Material.GRAY_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
 			            
 			            ItemStack btnGhast = new ItemStack(Material.WRITABLE_BOOK);
-			            ItemStack btnGhastTrue =  new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-			            ItemStack btnGhastFalse =  new ItemStack(Material.RED_STAINED_GLASS_PANE);
+			            ItemStack btnGhastTrue =  new ItemStack(getConfig().getBoolean("ghast_grief") ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE);
+			            ItemStack btnGhastFalse =  new ItemStack(getConfig().getBoolean("ghast_grief") ? Material.GRAY_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
 			            
 			            ItemStack btnHorse = new ItemStack(Material.WRITABLE_BOOK);
-			            ItemStack btnHorseTrue =  new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-			            ItemStack btnHorseFalse =  new ItemStack(Material.RED_STAINED_GLASS_PANE);
+			            ItemStack btnHorseTrue =  new ItemStack(getConfig().getBoolean("skeleton_horse_spawn") ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE);
+			            ItemStack btnHorseFalse =  new ItemStack(getConfig().getBoolean("skeleton_horse_spawn") ? Material.GRAY_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
 			            
 			            ItemStack btnPhantom = new ItemStack(Material.WRITABLE_BOOK);
-			            ItemStack btnPhantomTrue =  new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-			            ItemStack btnPhantomFalse =  new ItemStack(Material.RED_STAINED_GLASS_PANE);
+			            ItemStack btnPhantomTrue =  new ItemStack(getConfig().getBoolean("phantom_spawn") ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE);
+			            ItemStack btnPhantomFalse =  new ItemStack(getConfig().getBoolean("phantom_spawn") ? Material.GRAY_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
 			            
 			            ItemStack btnCreeper = new ItemStack(Material.WRITABLE_BOOK);
-			            ItemStack btnCreeperTrue =  new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-			            ItemStack btnCreeperFalse =  new ItemStack(Material.RED_STAINED_GLASS_PANE);
+			            ItemStack btnCreeperTrue =  new ItemStack(getConfig().getBoolean("creeper_grief") ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE);
+			            ItemStack btnCreeperFalse =  new ItemStack(getConfig().getBoolean("creeper_grief") ? Material.GRAY_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE);
 			            
 			            ItemStack btnSave = new ItemStack(Material.SLIME_BLOCK);
 			            ItemStack btnCancel =  new ItemStack(Material.BARRIER);
@@ -706,7 +689,6 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			            ItemMeta updatetrue_meta = btnUpdateTrue.getItemMeta();
 			            updatetrue_meta.setDisplayName("Set auto_update_check to True");
 			            ArrayList<String> updatetrue_lore = new ArrayList<>();
-			            //updatetrue_lore.add(ChatColor.AQUA + "Set auto_update_check to True");
 			            updatetrue_lore.add(ChatColor.YELLOW + "Will check for updates.");
 			            updatetrue_meta.setLore(updatetrue_lore);
 			            btnUpdateTrue.setItemMeta(updatetrue_meta);
@@ -714,7 +696,6 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			            ItemMeta updatefalse_meta = btnUpdateTrue.getItemMeta();
 			            updatefalse_meta.setDisplayName("Set auto_update_check to False");
 			            ArrayList<String> updatefalse_lore = new ArrayList<>();
-			            //updatefalse_lore.add(ChatColor.AQUA + "Set auto_update_check to False");
 			            updatefalse_lore.add(ChatColor.YELLOW + "Will not check for updates.");
 			            updatefalse_meta.setLore(updatefalse_lore);
 			            btnUpdateFalse.setItemMeta(updatefalse_meta);
@@ -825,7 +806,6 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			            ItemMeta consoletrue_meta = btnConsoleTrue.getItemMeta();
 			            consoletrue_meta.setDisplayName("Set console.colorful_console to True");
 			            ArrayList<String> consoletrue_lore = new ArrayList<>();
-			            //consoletrue_lore.add(ChatColor.AQUA + "Set console.colorful_console to True");
 			            consoletrue_lore.add(ChatColor.YELLOW + "Will have colorful text in console.");
 			            consoletrue_meta.setLore(consoletrue_lore);
 			            btnConsoleTrue.setItemMeta(consoletrue_meta);
@@ -833,11 +813,32 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			            ItemMeta consolefalse_meta = btnConsoleFalse.getItemMeta();
 			            consolefalse_meta.setDisplayName("Set console.colorful_console to False");
 			            ArrayList<String> consolefalse_lore = new ArrayList<>();
-			            //consolefalse_lore.add(ChatColor.AQUA + "Set console.colorful_console to False");
 			            consolefalse_lore.add(ChatColor.YELLOW + "Will not have colorful text in console.");
 			            consolefalse_meta.setLore(consolefalse_lore);
 			            btnConsoleFalse.setItemMeta(consolefalse_meta);
 			            
+			            
+			            ItemMeta longname_meta = btnLongname.getItemMeta();
+			            longname_meta.setDisplayName("console.longpluginname");
+			            ArrayList<String> longname_lore = new ArrayList<>();
+			            longname_lore.add(ChatColor.AQUA + "Logs use NoEndermanGrief");
+			            longname_lore.add(ChatColor.AQUA + "or NEG.");
+			            longname_meta.setLore(longname_lore);
+			            btnLongname.setItemMeta(longname_meta);
+			            
+			            ItemMeta longnametrue_meta = btnLongnameTrue.getItemMeta();
+			            longnametrue_meta.setDisplayName("Set longname.colorful_longname to True");
+			            ArrayList<String> longnametrue_lore = new ArrayList<>();
+			            longnametrue_lore.add(ChatColor.YELLOW + "Will have colorful text in longname.");
+			            longnametrue_meta.setLore(longnametrue_lore);
+			            btnLongnameTrue.setItemMeta(longnametrue_meta);
+			            
+			            ItemMeta longnamefalse_meta = btnLongnameFalse.getItemMeta();
+			            longnamefalse_meta.setDisplayName("Set longname.colorful_longname to False");
+			            ArrayList<String> longnamefalse_lore = new ArrayList<>();
+			            longnamefalse_lore.add(ChatColor.YELLOW + "Will not have colorful text in longname.");
+			            longnamefalse_meta.setLore(longnamefalse_lore);
+			            btnLongnameFalse.setItemMeta(longnamefalse_meta);
 			            
 			 
 			            ItemMeta trader_meta = btnTrader.getItemMeta();
@@ -1066,17 +1067,18 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			            //
 			            
 			            //Put the items in the inventory
-			            ItemStack[] menu_items = {btnUpdate, btnUpdateTrue, btnUpdateFalse, btnLang, btnLangCZ, btnLangDE, btnLangEN, btnLangFR, btnSpace,
+			            ItemStack[] menu_items = {
+			            		btnUpdate, btnUpdateTrue, btnUpdateFalse, btnLang, btnLangCZ, btnLangDE, btnLangEN, btnLangFR, btnSpace,
 			            		btnDebug, btnDebugTrue, btnDebugFalse, btnSpace, btnLangLOL, btnLangNL, btnLangBR, btnSpace, btnSpace,
 			            		btnConsole, btnConsoleTrue, btnConsoleFalse, btnTrader, btnTraderTrue, btnTraderFalse, btnPillager, btnPillagerTrue, btnPillagerFalse,
 			            		btnEnder, btnEnderTrue, btnEnderFalse, btnGhast, btnGhastTrue, btnGhastFalse, btnSpace, btnSpace, btnSpace,
 			            		btnHorse, btnHorseTrue, btnHorseFalse, btnPhantom, btnPhantomTrue, btnPhantomFalse, btnSpace, btnSpace, btnSpace,
-			            		btnCreeper, btnCreeperTrue, btnCreeperFalse, btnSpace, btnSpace, btnSpace, btnSave, btnSpace, btnCancel};
+			            		btnCreeper, btnCreeperTrue, btnCreeperFalse, btnLongname, btnLongnameTrue, btnLongnameFalse, btnSpace, btnSave, btnCancel};
 			            gui.setContents(menu_items);
 			            player.openInventory(gui);
 					  return true;
 				  }else if(!sender.hasPermission("noendermangrief.admin")){
-					  sender.sendMessage(ChatColor.YELLOW + this.getName() + ChatColor.RED + " " + get("neg.message.noperm"));
+					  sender.sendMessage(ChatColor.YELLOW + THIS_NAME + ChatColor.RED + " " + get("neg.message.noperm"));
 					  return false;
 				  }
 			}
@@ -1092,7 +1094,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 					player.getWorld().dropItemNaturally(player.getLocation(), setingsbook.giveBook());
 					return true;
 				}else if( !sender.hasPermission("noendermangrief.admin") ){
-					sender.sendMessage(ChatColor.YELLOW + this.getName() + ChatColor.RED + " " + get("neg.message.noperm"));
+					sender.sendMessage(ChatColor.YELLOW + THIS_NAME + ChatColor.RED + " " + get("neg.message.noperm"));
 					return false;
 				}
 			}
@@ -1100,10 +1102,11 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 				  if( sender.isOp() || sender.hasPermission("noendermangrief.toggledebug") || !(sender instanceof Player) ||
 						  sender.hasPermission("noendermangrief.op") || sender.hasPermission("noendermangrief.admin") ){
 					  debug = !debug;
-					  sender.sendMessage(ChatColor.YELLOW + this.getName() + ChatColor.RED + " " + get("neg.message.debugtrue").toString().replace("<boolean>", "" + debug));
+					  sender.sendMessage(ChatColor.YELLOW + THIS_NAME + ChatColor.RED + " " + 
+					  get("neg.message.debugtrue").toString().replace("<boolean>", get("neg.message.boolean." + String.valueOf(debug).toLowerCase()) ));
 					  return true;
 				  }else{
-					  sender.sendMessage(ChatColor.YELLOW + this.getName() + ChatColor.RED + " " + get("neg.message.noperm"));
+					  sender.sendMessage(ChatColor.YELLOW + THIS_NAME + ChatColor.RED + " " + get("neg.message.noperm"));
 					  return false;
 				  }
 			}
@@ -1190,7 +1193,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 					daLang = getConfig().getString("lang", "en_US");
 					reloadConfig();
 					
-					sender.sendMessage(ChatColor.YELLOW + this.getName() + ChatColor.RED + " has been " + ChatColor.WHITE + "reloaded");
+					sender.sendMessage(ChatColor.YELLOW + THIS_NAME + ChatColor.RED + " has been " + ChatColor.WHITE + "reloaded");
 					return true;
 				}else{
 					sender.sendMessage(ChatColor.DARK_RED + "" + get("neg.message.no_perm"));
@@ -1210,7 +1213,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 								UCnewVers = updater.newVersion();
 								
 								log(Level.WARNING, "*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
-								log(Level.WARNING, "* " + lang.get("newvers.message").toString().replace("<MyPlugin>", this.getName()) );
+								log(Level.WARNING, "* " + lang.get("newvers.message").toString().replace("<MyPlugin>", THIS_NAME) );
 								log(Level.WARNING, "* " + lang.get("newvers.old_vers") + ChatColor.RED + " " + UColdVers );
 								log(Level.WARNING, "* " + lang.get("newvers.new_vers") + ChatColor.GREEN + " " + UCnewVers );
 								log(Level.WARNING, "* " + lang.get("newvers.notes") + ": " + updater.newVersionNotes());
@@ -1238,37 +1241,42 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 				}
 			}
 			if(args[0].equalsIgnoreCase("update")){ // TODO: Command Update
-			  // Player must be OP and auto_update_check must be true
+			  // Player must be OP
 				if(!(sender instanceof Player)) {
-					/** Update Checker */
-					if(UpdateCheck){
-						try {
-							Bukkit.getConsoleSender().sendMessage("Checking for updates...");
-							UpdateChecker updater = new UpdateChecker(this, projectID, updateurl);
-							if(updater.checkForUpdates()) {
-								UpdateAvailable = true; // TODO: Update Checker
-								UColdVers = updater.oldVersion();
-								UCnewVers = updater.newVersion();
-								
-								log(Level.WARNING, "*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
-								log(Level.WARNING, "* " + get("neg.version.message").toString().replace("<MyPlugin>", this.getName()) );
-								log(Level.WARNING, "* " + get("neg.version.old_vers") + ChatColor.RED + UColdVers );
-								log(Level.WARNING, "* " + get("neg.version.new_vers") + ChatColor.GREEN + UCnewVers );
-								log(Level.WARNING, "*");
-								log(Level.WARNING, "* " + get("neg.version.please_update") );
-								log(Level.WARNING, "*");
-								log(Level.WARNING, "* " + get("neg.version.download") + ": " + DownloadLink + "/history");
-								log(Level.WARNING, "* " + get("neg.version.donate") + ": https://ko-fi.com/joelgodofwar");
-								log(Level.WARNING, "*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
-								//Bukkit.getConsoleSender().sendMessage(newVerMsg.replace("{oVer}", UColdVers).replace("{nVer}", UCnewVers));
-								//Bukkit.getConsoleSender().sendMessage(Ansi.GREEN + UpdateChecker.getResourceUrl() + Ansi.RESET);
-							}else{
-								UpdateAvailable = false;
-							}
-						}catch(Exception e) {
-							Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Could not process update check");
-							e.printStackTrace();
+					/** Console */
+					try {
+						Bukkit.getConsoleSender().sendMessage("Checking for updates...");
+						VersionChecker updater = new VersionChecker(this, projectID, githubURL);
+						if(updater.checkForUpdates()) {
+							/** Update available */
+							UpdateAvailable = true; // TODO: Update Checker
+							UColdVers = updater.oldVersion();
+							UCnewVers = updater.newVersion();
+							
+							log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+							log("* " + get("neg.version.message").toString().replace("<MyPlugin>", THIS_NAME) );
+							log("* " + get("neg.version.old_vers") + ChatColor.RED + UColdVers );
+							log("* " + get("neg.version.new_vers") + ChatColor.GREEN + UCnewVers );
+							log("*");
+							log("* " + get("neg.version.please_update") );
+							log("*");
+							log("* " + get("neg.version.download") + ": " + DownloadLink + "/history");
+							log("* " + get("neg.version.donate.message") + ": https://ko-fi.com/joelgodofwar");
+							log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+							//Bukkit.getConsoleSender().sendMessage(newVerMsg.replace("{oVer}", UColdVers).replace("{nVer}", UCnewVers));
+							//Bukkit.getConsoleSender().sendMessage(Ansi.GREEN + UpdateChecker.getResourceUrl() + Ansi.RESET);
+						}else{
+							/** Up to date */
+							UpdateAvailable = false;
+							log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
+							log("* " + ChatColor.YELLOW + THIS_NAME + ChatColor.RESET + " " + get("neg.version.curvers") + ChatColor.RESET );
+							log("* " + get("neg.version.donate.message") + ": https://ko-fi.com/joelgodofwar");
+							log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
 						}
+					}catch(Exception e) {
+						/** Error */
+						Bukkit.getConsoleSender().sendMessage(ChatColor.RED + get("neg.version.update.error"));
+						e.printStackTrace();
 					}
 					/** end update checker */
 					return true;
@@ -1276,46 +1284,46 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 				/** Check if player has permission */
 				if( sender.isOp() || sender.hasPermission("noendermangrief.op") || sender.hasPermission("noendermangrief.showUpdateAvailable") 
 						|| sender.hasPermission("noendermangrief.admin") ){
-					String pluginName = this.getName();
 					BukkitTask updateTask = this.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
-
 						public void run() {
 							try {
 								Bukkit.getConsoleSender().sendMessage("Checking for updates...");
-								UpdateChecker updater = new UpdateChecker(thisVersion, projectID, updateurl);
+								VersionChecker updater = new VersionChecker(THIS_VERSION, projectID, githubURL);
 								if(updater.checkForUpdates()) {
 									UpdateAvailable = true;
 									UColdVers = updater.oldVersion();
 									UCnewVers = updater.newVersion();
-									String links = "[\"\",{\"text\":\"Download\",\"bold\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"<DownloadLink>/history\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Download the latest version.\"}},{\"text\":\" \",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Download the latest version.\"}},{\"text\":\"| \"},{\"text\":\"Donate\",\"bold\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://ko-fi.com/joelgodofwar\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Donate to the plugin maker.\"}},{\"text\":\" | \"},{\"text\":\"ChangeLog\",\"bold\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"<DownloadLink>/updates\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"View the ChangeLog.\"}}]";
-									links = links.replace("<DownloadLink>", DownloadLink);
+									String links = "[\"\",{\"text\":\"<Download>\",\"bold\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"<DownloadLink>/history\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"<please_update>\"}},{\"text\":\" \",\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"<please_update>\"}},{\"text\":\"| \"},{\"text\":\"<Donate>\",\"bold\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://ko-fi.com/joelgodofwar\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"<Donate_msg>\"}},{\"text\":\" | \"},{\"text\":\"<Notes>\",\"bold\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"<DownloadLink>/updates\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"<Notes_msg>.\"}}]";
+									links = links.replace("<DownloadLink>", DownloadLink).replace("<Download>", get("neg.version.download"))
+											.replace("<Donate>", get("neg.version.donate")).replace("<please_update>", get("neg.version.please_update"))
+											.replace("<Donate_msg>", get("neg.version.donate.message")).replace("<Notes>", get("neg.version.notes"))
+											.replace("<Notes_msg>", get("neg.version.notes.message"));
 									String versions = "" + ChatColor.GRAY + get("neg.version.new_vers") + ": " + ChatColor.GREEN + "{nVers} | " + get("neg.version.old_vers") + ": " + ChatColor.RED + "{oVers}";
-									sender.sendMessage("" + ChatColor.GRAY + get("neg.version.message").toString().replace("<MyPlugin>", ChatColor.GOLD + pluginName + ChatColor.GRAY) );
+									sender.sendMessage("" + ChatColor.GRAY + get("neg.version.message").toString().replace("<MyPlugin>", ChatColor.GOLD + THIS_NAME + ChatColor.GRAY) );
 									Utils.sendJson(sender, links);
 									sender.sendMessage(versions.replace("{nVers}", UCnewVers).replace("{oVers}", UColdVers));
 								}else{
-									String links = "{\"text\":\"Donate\",\"bold\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://ko-fi.com/joelgodofwar\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Donate to the plugin maker.\"}}";
+									String links = "{\"text\":\"<Donate>\",\"bold\":true,\"color\":\"gold\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://ko-fi.com/joelgodofwar\"},\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"<Donate_msg>\"}}";
+									links = links.replace("<Donate>", get("neg.version.donate")).replace("<Donate_msg>", get("neg.version.donate.message"));
 									Utils.sendJson(sender, links);
-									sender.sendMessage(ChatColor.YELLOW + thisName + ChatColor.RED + " v" + thisVersion + ChatColor.RESET + " Up to date." + ChatColor.RESET);
+									sender.sendMessage(ChatColor.YELLOW + THIS_NAME + ChatColor.RED + " v" + THIS_VERSION + ChatColor.RESET + " " + get("neg.version.curvers") + ChatColor.RESET);
 									UpdateAvailable = false;
 								}
 							}catch(Exception e) {
-								sender.sendMessage(ChatColor.RED + "Could not process update check");
-								Bukkit.getConsoleSender().sendMessage(Ansi.RED + "Could not process update check");
+								sender.sendMessage(ChatColor.RED + get("neg.version.update.error"));
 								e.printStackTrace();
 							}
 						}
-						
 					});
 					return true;
 				}else{
-					sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + get("neg.message.noperm"));
+					sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + get("neg.message.noperm"));
 					return false;
 				}
 			}
 			if( args[0].equalsIgnoreCase("eg") || args[0].equalsIgnoreCase("endermangrief") ){
 				if(args.length <= 1){
-					sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.enderman.current" + 
+					sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.enderman.current" + 
 							"").toString().replace("[setting]", "" + getConfig().getBoolean("enderman_grief", false)));
 					return true;
 				}
@@ -1323,17 +1331,17 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 				if ( !(sender instanceof Player) || sender.hasPermission("noendermangrief.admin") ) {
 					/** Command code */
 					if(!args[1].equalsIgnoreCase("true") & !args[1].equalsIgnoreCase("false")){
-						sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.RED + get("neg.var.boolean") + ": /neg eg True/False");
+						sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.RED + get("neg.var.boolean") + ": /neg eg True/False");
 						return false;
 					}else if(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("false")){
 						config.set("enderman_grief", Boolean.parseBoolean(args[1]));
 						saveConfig();
 						
-						sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.enderman.set") + " " + args[1]);
+						sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.enderman.set") + " " + args[1]);
 						if(args[1].equalsIgnoreCase("false")){
-							sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.enderman.wont") );
+							sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.enderman.wont") );
 						}else if(args[1].equalsIgnoreCase("true")){
-							sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.enderman.will") );
+							sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.enderman.will") );
 						}
 						try {
 							getConfig().load(new File(getDataFolder(), "config.yml"));
@@ -1357,7 +1365,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			}
 			if( args[0].equalsIgnoreCase("sh") || args[0].equalsIgnoreCase("skeletonhorse") ){
 				if(args.length <= 1){
-					sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.skeleton_horse.current" + 
+					sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.skeleton_horse.current" + 
 							"").toString().replace("[setting]", "" + getConfig().getBoolean("skeleton_horse_spawn", false)));
 					return true;
 				}
@@ -1365,17 +1373,17 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 				if ( !(sender instanceof Player) || sender.hasPermission("noendermangrief.admin") ) {
 					/** Command code */
 					if(!args[1].equalsIgnoreCase("true") & !args[1].equalsIgnoreCase("false")){
-						sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.RED + get("neg.var.boolean") + ": /neg sh True/False");
+						sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.RED + get("neg.var.boolean") + ": /neg sh True/False");
 						return false;
 					}else if(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("false")){
 						config.set("skeleton_horse_spawn", Boolean.parseBoolean(args[1]));
 						saveConfig();
 						
-						sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.skeleton_horse.set") + " " + args[1]);
+						sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.skeleton_horse.set") + " " + args[1]);
 						if(args[1].equalsIgnoreCase("false")){
-							sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.skeleton_horse.wont") );
+							sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.skeleton_horse.wont") );
 						}else if(args[1].equalsIgnoreCase("true")){
-							sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.skeleton_horse.will") );
+							sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.skeleton_horse.will") );
 						}
 						try {
 							getConfig().load(new File(getDataFolder(), "config.yml"));
@@ -1398,7 +1406,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			}
 			if( args[0].equalsIgnoreCase("wt") || args[0].equalsIgnoreCase("wanderingtrader") ){
 				if(args.length <= 1){
-					sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.wandering_trader.current" + 
+					sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.wandering_trader.current" + 
 							"").toString().replace("[setting]", "" + getConfig().getBoolean("wandering_trader_spawn", false)));
 					return true;
 				}
@@ -1407,17 +1415,17 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 				if ( !(sender instanceof Player) || sender.hasPermission("noendermangrief.admin") ) {
 					/** Command code */
 					if(!args[1].equalsIgnoreCase("true") & !args[1].equalsIgnoreCase("false")){
-						sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.RED + get("neg.var.boolean") + ": /neg sh True/False");
+						sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.RED + get("neg.var.boolean") + ": /neg sh True/False");
 						return false;
 					}else if(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("false")){
 						config.set("wandering_trader_spawn", Boolean.parseBoolean(args[1]));
 						saveConfig();
 						
-						sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.wandering_trader.set") + " " + args[1]);
+						sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.wandering_trader.set") + " " + args[1]);
 						if(args[1].equalsIgnoreCase("false")){
-							sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.wandering_trader.wont") );
+							sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.wandering_trader.wont") );
 						}else if(args[1].equalsIgnoreCase("true")){
-							sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.wandering_trader.will") );
+							sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.wandering_trader.will") );
 						}
 						try {
 							getConfig().load(new File(getDataFolder(), "config.yml"));
@@ -1440,7 +1448,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			}
 			if( args[0].equalsIgnoreCase("cg") || args[0].equalsIgnoreCase("creepergrief") ){
 				if(args.length <= 1){
-					sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.creeper.current" + 
+					sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.creeper.current" + 
 							"").toString().replace("[setting]", "" + getConfig().getBoolean("creeper_grief", false)));
 					return true;
 				}
@@ -1448,17 +1456,17 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 				if ( !(sender instanceof Player) || sender.hasPermission("noendermangrief.admin") ) {
 					/** Command code */
 					if(!args[1].equalsIgnoreCase("true") & !args[1].equalsIgnoreCase("false")){
-						sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.RED + get("neg.var.boolean") + ": /neg eg True/False");
+						sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.RED + get("neg.var.boolean") + ": /neg eg True/False");
 						return false;
 					}else if(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("false")){
 						config.set("creeper_grief", Boolean.parseBoolean(args[1]));
 						saveConfig();
 						
-						sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.creeper.set") + " " + args[1]);
+						sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.creeper.set") + " " + args[1]);
 						if(args[1].equalsIgnoreCase("false")){
-							sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.creeper.wont") );
+							sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.creeper.wont") );
 						}else if(args[1].equalsIgnoreCase("true")){
-							sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.creeper.will") );
+							sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.creeper.will") );
 						}
 						try {
 							getConfig().load(new File(getDataFolder(), "config.yml"));
@@ -1482,7 +1490,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			// Ghast Grief
 			if( args[0].equalsIgnoreCase("gg") || args[0].equalsIgnoreCase("ghastgrief") ){
 				if(args.length <= 1){
-					sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.ghast.current")
+					sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.ghast.current")
 					.toString().replace("[setting]", "" + getConfig().getBoolean("ghast_grief", false)));
 					return true;
 				}
@@ -1490,17 +1498,17 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 				if ( !(sender instanceof Player) || sender.hasPermission("noendermangrief.admin") ) {
 					/** Command code */
 					if(!args[1].equalsIgnoreCase("true") & !args[1].equalsIgnoreCase("false")){
-						sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.RED + get("neg.var.boolean") + ": /neg eg True/False");
+						sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.RED + get("neg.var.boolean") + ": /neg eg True/False");
 						return false;
 					}else if(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("false")){
 						config.set("ghast_grief", Boolean.parseBoolean(args[1]));
 						saveConfig();
 						
-						sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.ghast.set") + " " + args[1]);
+						sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.ghast.set") + " " + args[1]);
 						if(args[1].equalsIgnoreCase("false")){
-							sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.ghast.wont") );
+							sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.ghast.wont") );
 						}else if(args[1].equalsIgnoreCase("true")){
-							sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.ghast.will") );
+							sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.ghast.will") );
 						}
 						try {
 							getConfig().load(new File(getDataFolder(), "config.yml"));
@@ -1523,7 +1531,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			}
 			if( args[0].equalsIgnoreCase("pg") || args[0].equalsIgnoreCase("phantomgrief") ){ // Phantom Grief
 				if(args.length <= 1){
-					sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.phantom.current")
+					sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.phantom.current")
 					.toString().replace("[setting]", "" + getConfig().getBoolean("phantom_spawn", false)));
 					return true;
 				}
@@ -1531,17 +1539,17 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 				if( !(sender instanceof Player) || sender.hasPermission("noendermangrief.admin") ) {
 					/** Command code */
 					if(!args[1].equalsIgnoreCase("true") & !args[1].equalsIgnoreCase("false")){
-						sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.RED + get("neg.var.boolean") + ": /neg eg True/False");
+						sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.RED + get("neg.var.boolean") + ": /neg eg True/False");
 						return false;
 					}else if(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("false")){
 						config.set("phantom_spawn", Boolean.parseBoolean(args[1]));
 						saveConfig();
 						
-						sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.phantom.set") + " " + args[1]);
+						sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.phantom.set") + " " + args[1]);
 						if(args[1].equalsIgnoreCase("false")){
-							sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.phantom.wont") );
+							sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.phantom.wont") );
 						}else if(args[1].equalsIgnoreCase("true")){
-							sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.phantom.will") );
+							sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.phantom.will") );
 						}
 						try {
 							getConfig().load(new File(getDataFolder(), "config.yml"));
@@ -1564,7 +1572,7 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 			}
 			if( args[0].equalsIgnoreCase("pp") || args[0].equalsIgnoreCase("pillagerpatrol") ){ // Pillager Patrol Grief
 				if(args.length <= 1){
-					sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.pillager_patrol.current")
+					sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.pillager_patrol.current")
 						.toString().replace("[setting]", "" + getConfig().getBoolean("pillager_patrol_spawn", false)));
 					return true;
 				}
@@ -1572,17 +1580,17 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 				if( !(sender instanceof Player) || sender.hasPermission("noendermangrief.admin") ) {
 					/** Command code */
 					if(!args[1].equalsIgnoreCase("true") & !args[1].equalsIgnoreCase("false")){
-						sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.RED + get("neg.var.boolean") + ": /neg eg True/False");
+						sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.RED + get("neg.var.boolean") + ": /neg eg True/False");
 						return false;
 					}else if(args[1].equalsIgnoreCase("true") || args[1].equalsIgnoreCase("false")){
 						config.set("pillager_patrol_spawn", Boolean.parseBoolean(args[1]));
 						saveConfig();
 						
-						sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.pillager_patrol.set") + " " + args[1]);
+						sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.pillager_patrol.set") + " " + args[1]);
 						if(args[1].equalsIgnoreCase("false")){
-							sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.pillager_patrol.wont") );
+							sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.pillager_patrol.wont") );
 						}else if(args[1].equalsIgnoreCase("true")){
-							sender.sendMessage(ChatColor.YELLOW + this.getName() + " " + ChatColor.WHITE + get("entity.pillager_patrol.will") );
+							sender.sendMessage(ChatColor.YELLOW + THIS_NAME + " " + ChatColor.WHITE + get("neg.entity.pillager_patrol.will") );
 						}
 						try {
 							getConfig().load(new File(getDataFolder(), "config.yml"));
@@ -1733,12 +1741,23 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 		return setingsbook != null;
 	}
 	
-	public boolean saveConfig(boolean update, boolean Debug, boolean Console, boolean Trader, boolean Pillager, boolean Ender, boolean Ghast, boolean Horse,
+	public boolean saveConfig(boolean update, boolean Debug, boolean Console, boolean Longname, boolean Trader, boolean Pillager, boolean Ender, boolean Ghast, boolean Horse,
 			boolean Phantom, boolean Creeper, String Lang) {
+		// UpdateCheck	debug	daLang	colorful_console
+		UpdateCheck = update;
+		debug = Debug;
+		daLang = Lang;
+		colorful_console = Console;
+		if(!Longname) {
+			pluginName = "NEG";
+		}else {
+			pluginName = THIS_NAME;
+		}
 		config.set("auto_update_check", update);
 		config.set("debug", Debug);
 		config.set("lang", Lang);
 		config.set("console.colorful_console", Console);
+		config.set("console.longpluginname", Longname);
 		config.set("enderman_grief", Ender);
 		config.set("skeleton_horse_spawn", Horse);
 		config.set("creeper_grief", Creeper);
@@ -1757,8 +1776,37 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 		return true;
 	}
 	
+	public String LoadTime(long startTime) {
+	    long elapsedTime = System.currentTimeMillis() - startTime;
+	    long minutes = TimeUnit.MILLISECONDS.toMinutes(elapsedTime);
+	    long seconds = TimeUnit.MILLISECONDS.toSeconds(elapsedTime) % 60;
+	    long milliseconds = elapsedTime % 1000;
+	    
+	    if (minutes > 0) {
+	        return String.format("%d min %d s %d ms.", minutes, seconds, milliseconds);
+	    } else if (seconds > 0) {
+	        return String.format("%d s %d ms.", seconds, milliseconds);
+	    } else {
+	        return String.format("%d ms.", elapsedTime);
+	    }
+	}
+	
 	@SuppressWarnings("static-access")
-	public String get(String key) {
-		return lang2.get(key);
+	public String get(String key, String... defaultValue) {
+		return lang2.get(key, defaultValue);
+	}
+	
+	public boolean isPluginRequired(String pluginName) {
+	    String[] requiredPlugins = {"SinglePlayerSleep", "MoreMobHeads", "NoEndermanGrief", "ShulkerRespawner", "DragonDropElytra", "RotationalWrench", "SilenceMobs", "VillagerWorkstationHighlights"};
+	    for (String requiredPlugin : requiredPlugins) {
+	        if (getServer().getPluginManager().getPlugin(requiredPlugin) != null && getServer().getPluginManager().isPluginEnabled(requiredPlugin)) {
+	            if (requiredPlugin.equals(pluginName)) {
+	                return true;
+	            } else {
+	                return false;
+	            }
+	        }
+	    }
+	    return true;
 	}
 }
