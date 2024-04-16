@@ -1,9 +1,7 @@
 <versions>
   <release>
-    <version>1.14_1.0.7</version>
-    <notes>D1	i18n language files.
-D2	Ready for user testing of GUI Menu Configs. "/NEG config" Requires noendermangrief.admin permission
-D3	Fixed i18n lang files, reworked update checker.</notes>
+    <version>1.14_1.0.8</version>
+    <notes>D1 Removed Birthday Message code. Please accept my apologies. </notes>
     <link>https://www.spigotmc.org/resources/no-enderman-grief2.71236/history</link>
   </release>
   <developer>
