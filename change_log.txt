@@ -1,5 +1,8 @@
+1.14_1.0.9
+D1	Added better error and log handling, and new book creator.
+D2	
 1.14_1.0.8
-D1	
+D1	Removed Birthday Message code.
 1.14_1.0.7
 D1	i18n language files.
 D2	Ready for user testing of GUI Menu Configs. "/NEG config" Requires noendermangrief.admin permission

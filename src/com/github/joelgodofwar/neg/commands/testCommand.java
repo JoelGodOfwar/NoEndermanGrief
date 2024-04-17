@@ -9,11 +9,11 @@ import com.github.joelgodofwar.neg.util.VersionChecker;
 
 public class testCommand {
 	private static NoEndermanGrief plugin;
-	
+
 	public testCommand(NoEndermanGrief plugin) {
-        testCommand.plugin = plugin;
-    }
-	
+		testCommand.plugin = plugin;
+	}
+
 	public static boolean execute(CommandSender sender, String[] args) {
 		try {
 			Bukkit.getConsoleSender().sendMessage("Checking for updates...");
@@ -23,7 +23,7 @@ public class testCommand {
 				plugin.UpdateAvailable = true;
 				plugin.UColdVers = updater.oldVersion();
 				plugin.UCnewVers = updater.newVersion();
-				
+
 				log("*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*!*");
 				log("* " + plugin.get("neg.version.message").toString().replace("<MyPlugin>", plugin.getName()) );
 				log("* " + plugin.get("neg.version.old_vers") + ChatColor.RED + " " + plugin.UColdVers );
@@ -51,10 +51,10 @@ public class testCommand {
 			e.printStackTrace();
 			return false;
 		}
-		
-		
+
+
 	}
 	public static void log(String string) {
-		plugin.log(string);
+		plugin.LOGGER.log(string);
 	}
 }
