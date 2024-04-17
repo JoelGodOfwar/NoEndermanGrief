@@ -9,8 +9,8 @@ import net.minecraft.server.v1_14_R1.NBTTagList;
 import net.minecraft.server.v1_14_R1.NBTTagString;
 
 public class SettingsBook_v1_14_R1 implements SettingsBook{
-	
-	public ItemStack giveBook() {
+
+	@Override public ItemStack giveBook() {
 		ItemStack book = new ItemStack(Material.WRITTEN_BOOK); //Create bukkit book
 		net.minecraft.server.v1_14_R1.ItemStack stack = CraftItemStack.asNMSCopy(book); //Get the nms version
 		NBTTagCompound tag = new NBTTagCompound(); //Create the NMS Stack's NBT (item data)

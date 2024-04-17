@@ -1,14 +1,14 @@
 package com.github.joelgodofwar.neg.nms;
 
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
-public class SettingsBook_v1_19_R2 implements SettingsBook{
+public class SettingsBook_v1_20_R3 implements SettingsBook{
 
 
 	@Override public ItemStack giveBook() {
@@ -24,5 +24,4 @@ public class SettingsBook_v1_19_R2 implements SettingsBook{
 		ItemStack is = CraftItemStack.asCraftMirror(stack); //Get the bukkit version of the stack
 		return is;
 	}
-
 }
