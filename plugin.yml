@@ -3,6 +3,7 @@ main: com.github.joelgodofwar.neg.NoEndermanGrief
 version: 1.14_1.0.9
 author: JoelYahwehOfWar
 api-version: 1.14
+folia-supported: true
 
 commands:
   neg:
