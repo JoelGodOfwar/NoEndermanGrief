@@ -20,7 +20,7 @@ public class PluginLibrary {
 	/**
 	 * The maximum version MoreMobHeads has been tested with.
 	 */
-	public static final String MAXIMUM_MINECRAFT_VERSION = "1.20.4";
+	public static final String MAXIMUM_MINECRAFT_VERSION = "1.21";
 
 	/**
 	 * The date (with ISO 8601 or YYYY-MM-DD) when the most recent version (1.20.4) was released.
@@ -85,6 +85,8 @@ public class PluginLibrary {
 
 	public static final ReportType REPORT_METRICS_LOAD_ERROR = new ReportType("Cannot load bStats Metrics.");
 
+	public static final ReportType REPORT_TAB_COMPLETE_ERROR = new ReportType("Error parsing Tab Complete.");
+	public static final ReportType UNHANDLED_COMMAND_ERROR = new ReportType("Command had an Unhandled exception.");
 	public static final ReportType REPORT_BOOK_SETUP_ERROR = new ReportType("Error creating settings book.");
 	public static final ReportType ERROR_HANDLING_ENDERMAN_GRIEF = new ReportType("Error handling Enderman Grief.");
 	public static final ReportType ERROR_HANDLING_CREEPER_GRIEF = new ReportType("Error handling Creeper Grief.");
