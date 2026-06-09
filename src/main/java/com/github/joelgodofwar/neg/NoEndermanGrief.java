@@ -519,8 +519,8 @@ public class NoEndermanGrief extends JavaPlugin implements Listener{
 						sender.sendMessage(ChatColor.GOLD + " ");
 						if( sender.isOp()||sender.hasPermission("noendermangrief.op") || sender.hasPermission("noendermangrief.admin") ){
 							sender.sendMessage(ChatColor.WHITE + " -<[" + ChatColor.AQUA + " OP Commands " + ChatColor.WHITE + "}>-");
-							sender.sendMessage(ChatColor.GOLD + " /NEG update - " + get("neg.command.update"));//Check for update.");
-							sender.sendMessage(ChatColor.GOLD + " /NEG reload - " + get("neg.command.reload") );//Reload config file.");
+							sender.sendMessage(ChatColor.GOLD + " /NEG update - " + get("neg.command.update"));//Check for update.
+							sender.sendMessage(ChatColor.GOLD + " /NEG reload - " + get("neg.command.reload") );//Reload config file.
 							if( sender.hasPermission("noendermangrief.admin") ) {
 								sender.sendMessage(ChatColor.GOLD + " /NEG config - " + get("neg.command.config") );
 							}

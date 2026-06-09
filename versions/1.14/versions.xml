@@ -1,0 +1,13 @@
+<versions>
+  <release>
+    <version>1.14_1.0.9</version>
+    <notes>D1	Added better error and log handling, and new book creator.</notes>
+    <link>https://www.spigotmc.org/resources/no-enderman-grief2.71236/history</link>
+  </release>
+  <developer>
+    <version>1.14_1.0.7.D2</version>
+    <notes>D1	i18n language files.
+D2	Ready for user testing of GUI Menu Configs. "/NEG config" Requires noendermangrief.admin permission</notes>
+    <link>https://discord.com/channels/654087250665144321/654444482372173875</link>
+  </developer>
+</versions>
