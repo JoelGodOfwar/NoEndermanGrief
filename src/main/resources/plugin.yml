@@ -1,0 +1,24 @@
+name: NoEndermanGrief
+main: com.github.joelgodofwar.neg.NoEndermanGrief
+version: ${project.version}
+author: JoelYahwehOfWar
+api-version: 1.20
+folia-supported: true
+
+commands:
+  neg:
+    description: Shows NoEndermanGrief help.
+    usage: /<command>
+permissions:
+  noendermangrief.admin:
+    description: For Admin only, Overrides all permissions.
+    default: false
+  noendermangrief.op:
+    description: Overrides most permissions.
+    default: false
+  noendermangrief.showUpdateAvailable:
+    description: Shows player if there is an update on login.
+    default: op
+  noendermangrief.toggledebug:
+    description: Allows the player to use "/neg toggledebug" command.
+    default: op
