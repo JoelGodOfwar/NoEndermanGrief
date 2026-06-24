@@ -1,6 +1,6 @@
 <versions>
   <release>
-    <version>1.14_1.0.10</version>
+    <version>1.20_1.0.11</version>
     <notes>D1    Added Config subcommand that opens a GUI menu.
 D2    Fixed issue with config command settings not taking effect.
 D3    Max MC version is now 26.1.2</notes>
